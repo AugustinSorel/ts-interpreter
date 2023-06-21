@@ -6,13 +6,16 @@
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
     "build": "tsc -p .",
-    "start": "node ./build/index.js"
+    "start": "node ./build/index.js",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.3.1",
-    "tsx": "^3.12.7"
+    "tsx": "^3.12.7",
+    "vitest": "^0.32.2"
   }
 }
