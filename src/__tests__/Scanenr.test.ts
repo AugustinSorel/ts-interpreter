@@ -102,4 +102,22 @@ describe("Scanner", () => {
       new Token({ type: "eof", lexeme: "", literal: null, line: 2 }),
     ]);
   });
+
+  it("should ignore block comment", () => {
+    const source = `"Hello" /* this is a comment */ 123`;
+
+    const scanner = new Scanner({ source });
+    const tokens = scanner.scanTokens();
+
+    expect(tokens).toEqual([
+      new Token({
+        type: "string",
+        lexeme: '"Hello"',
+        literal: "Hello",
+        line: 1,
+      }),
+      new Token({ type: "number", lexeme: "123", literal: 123, line: 1 }),
+      new Token({ type: "eof", lexeme: "", literal: null, line: 1 }),
+    ]);
+  });
 });

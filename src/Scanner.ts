@@ -94,6 +94,23 @@ export class Scanner {
           while (this.peek() !== "\n" && !this.isAtEnd()) {
             this.advance();
           }
+        } else if (this.match({ expected: "*" })) {
+          while (
+            this.peek() !== "*" &&
+            this.peekNext() !== "/" &&
+            !this.isAtEnd()
+          ) {
+            if (this.peek() === "\n") {
+              this.line++;
+            }
+            this.advance();
+          }
+          if (this.isAtEnd()) {
+            error({ line: this.line, message: "Unterminated block comment." });
+          } else {
+            this.advance();
+            this.advance();
+          }
         } else {
           this.addToken({ type: "slash" });
         }

@@ -7,4 +7,15 @@
 
 .12
 
+== // this is a equal signs
+
 () {}
+
+$
+
+/* 
+  this is a block comment
+  it can span multiple lines
+*/
+
+==
