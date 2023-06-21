@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 devDependencies:
+  '@types/node':
+    specifier: ^20.3.1
+    version: 20.3.1
   tsx:
     specifier: ^3.12.7
     version: 3.12.7
@@ -225,6 +228,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@types/node@20.3.1:
+    resolution: {integrity: sha512-EhcH/wvidPy1WeML3TtYFGR83UzjxeWRen9V402T8aUGYsCHOmfoisV3ZSg03gAFIbLq8TnWOJ0f4cALtnSEUg==}
+    dev: true
 
   /buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
