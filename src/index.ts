@@ -1,27 +1,21 @@
 import fs from "fs/promises";
+import { Scanner } from "./Scanner";
 
 const FILE_NAME = "data.txt";
 const FILE_OPTIONS = { encoding: "utf8" } as const;
 
 let hadError = false;
 
-const getCleanedLines = ({ data }: { data: string }) => {
-  return data
-    .split("\n")
-    .filter((line) => line)
-    .map((line) => line.trim());
-};
-
-const run = ({ line }: { line: string }) => {
-  const scanner = new Scanner({ line });
+const run = ({ source }: { source: string }) => {
+  const scanner = new Scanner({ source });
   const tokens = scanner.scanTokens();
 
   for (const token of tokens) {
-    console.log(tokens);
+    console.log(token);
   }
 };
 
-const error = ({ line, message }: { line: number; message: string }) => {
+export const error = ({ line, message }: { line: number; message: string }) => {
   report({ line, where: "", message });
 };
 
@@ -34,9 +28,7 @@ const main = async () => {
   try {
     const data = await fs.readFile(FILE_NAME, FILE_OPTIONS);
 
-    for (const line of getCleanedLines({ data })) {
-      run({ line });
-    }
+    run({ source: data });
 
     if (hadError) {
       process.exit(65);
