@@ -24,4 +24,64 @@ describe("Scanner", () => {
       new Token({ type: "eof", lexeme: "", literal: null, line: 3 }),
     ]);
   });
+
+  it("should return correct string literal", () => {
+    const source = '"hello world"';
+
+    const scanner = new Scanner({ source });
+    const tokens = scanner.scanTokens();
+
+    expect(tokens).toEqual([
+      new Token({
+        type: "string",
+        lexeme: '"hello world"',
+        literal: "hello world",
+        line: 1,
+      }),
+      new Token({ type: "eof", lexeme: "", literal: null, line: 1 }),
+    ]);
+  });
+
+  it("should return correct string letteral with new line", () => {
+    const source = '"hello \n world"';
+
+    const scanner = new Scanner({ source });
+    const tokens = scanner.scanTokens();
+
+    expect(tokens).toEqual([
+      new Token({
+        type: "string",
+        lexeme: '"hello \n world"',
+        literal: "hello \n world",
+        line: 2,
+      }),
+      new Token({ type: "eof", lexeme: "", literal: null, line: 2 }),
+    ]);
+  });
+
+  it("should return correct number ltieral", () => {
+    const source = "123 235";
+
+    const scanner = new Scanner({ source });
+    const tokens = scanner.scanTokens();
+
+    expect(tokens).toEqual([
+      new Token({ type: "number", lexeme: "123", literal: 123, line: 1 }),
+      new Token({ type: "number", lexeme: "235", literal: 235, line: 1 }),
+      new Token({ type: "eof", lexeme: "", literal: null, line: 1 }),
+    ]);
+  });
+
+  it("should return correct float number ltieral", () => {
+    const source = "12.3 23.5";
+
+    const scanner = new Scanner({ source });
+    const tokens = scanner.scanTokens();
+
+    expect(tokens).toEqual([
+      new Token({ type: "number", lexeme: "12.3", literal: 12.3, line: 1 }),
+      new Token({ type: "number", lexeme: "23.5", literal: 23.5, line: 1 }),
+      new Token({ type: "eof", lexeme: "", literal: null, line: 1 }),
+    ]);
+  });
 });

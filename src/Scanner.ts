@@ -25,13 +25,9 @@ export class Scanner {
     }
 
     this.tokens.push(
-      new Token({
-        type: "eof",
-        lexeme: "",
-        literal: null,
-        line: this.line,
-      })
+      new Token({ type: "eof", lexeme: "", literal: null, line: this.line })
     );
+
     return this.tokens;
   }
 
@@ -102,6 +98,9 @@ export class Scanner {
           this.addToken({ type: "slash" });
         }
         break;
+      case '"':
+        this.string();
+        break;
       case " ":
       case "\r":
       case "\t":
@@ -110,9 +109,63 @@ export class Scanner {
         this.line++;
         break;
       default:
-        error({ line: this.line, message: `Unexpected character: ${c}` });
+        if (this.isDigit({ c })) {
+          this.number();
+        } else {
+          error({ line: this.line, message: `Unexpected character: ${c}` });
+        }
         break;
     }
+  };
+
+  private number = () => {
+    while (this.isDigit({ c: this.peek() })) {
+      this.advance();
+    }
+
+    if (this.peek() === "." && this.isDigit({ c: this.peekNext() })) {
+      this.advance();
+
+      while (this.isDigit({ c: this.peek() })) {
+        this.advance();
+      }
+    }
+
+    this.addTokenWithLiteral({
+      type: "number",
+      literal: +this.source.substring(this.start, this.current),
+    });
+  };
+
+  private isDigit = ({ c }: { c: string }) => {
+    return c >= "0" && c <= "9";
+  };
+
+  private string = () => {
+    while (this.peek() != '"' && !this.isAtEnd()) {
+      if (this.peek() == "\n") {
+        this.line++;
+      }
+      this.advance();
+    }
+
+    if (this.isAtEnd()) {
+      error({ line: this.line, message: "Unterminated string." });
+      return;
+    }
+
+    this.advance();
+
+    const value = this.source.substring(this.start + 1, this.current - 1);
+    this.addTokenWithLiteral({ type: "string", literal: value });
+  };
+
+  private peekNext = () => {
+    if (this.current + 1 >= this.source.length) {
+      return "\0";
+    }
+
+    return this.source.charAt(this.current + 1);
   };
 
   private peek = () => {
