@@ -1,7 +1,26 @@
 import type { TokenCtor } from "./Token";
-import type { TokenType } from "./TokenType";
+import type { TokenType } from "./Token";
 import { Shell } from "./Shell";
 import { Token } from "./Token";
+
+const KEYWORDS: Record<string, TokenType> = {
+  and: "and",
+  class: "class",
+  else: "else",
+  false: "false",
+  for: "for",
+  fun: "fun",
+  if: "if",
+  nil: "nil",
+  or: "or",
+  print: "print",
+  return: "return",
+  super: "super",
+  this: "this",
+  true: "true",
+  var: "var",
+  while: "while",
+} as const;
 
 export class Scanner {
   private source: string;
@@ -91,31 +110,10 @@ export class Scanner {
         });
         break;
       case "/":
-        // TODO: add methods
         if (this.match({ expected: "/" })) {
-          while (this.peek() !== "\n" && !this.isAtEnd()) {
-            this.advance();
-          }
+          this.singleComment();
         } else if (this.match({ expected: "*" })) {
-          while (
-            this.peek() !== "*" &&
-            this.peekNext() !== "/" &&
-            !this.isAtEnd()
-          ) {
-            if (this.peek() === "\n") {
-              this.line++;
-            }
-            this.advance();
-          }
-          if (this.isAtEnd()) {
-            Shell.error({
-              line: this.line,
-              message: "Unterminated block comment.",
-            });
-          } else {
-            this.advance();
-            this.advance();
-          }
+          this.blockComment();
         } else {
           this.addToken({ type: "slash" });
         }
@@ -133,6 +131,8 @@ export class Scanner {
       default:
         if (this.isDigit({ c })) {
           this.number();
+        } else if (this.isAlpha({ c })) {
+          this.identifier();
         } else {
           Shell.error({
             line: this.line,
@@ -140,6 +140,30 @@ export class Scanner {
           });
         }
         break;
+    }
+  };
+
+  private singleComment = () => {
+    while (this.peek() !== "\n" && !this.isAtEnd()) {
+      this.advance();
+    }
+  };
+
+  private blockComment = () => {
+    while (this.peek() !== "*" && this.peekNext() !== "/" && !this.isAtEnd()) {
+      if (this.peek() === "\n") {
+        this.line++;
+      }
+      this.advance();
+    }
+    if (this.isAtEnd()) {
+      Shell.error({
+        line: this.line,
+        message: "Unterminated block comment.",
+      });
+    } else {
+      this.advance();
+      this.advance();
     }
   };
 
@@ -162,8 +186,27 @@ export class Scanner {
     });
   };
 
+  private identifier = () => {
+    while (this.isAlphaNumeric({ c: this.peek() })) {
+      this.advance();
+    }
+
+    const text = this.source.substring(this.start, this.current);
+    const type = KEYWORDS[text] || "identifier";
+
+    this.addToken({ type });
+  };
+
+  private isAlpha = ({ c }: { c: string }) => {
+    return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_";
+  };
+
   private isDigit = ({ c }: { c: string }) => {
     return c >= "0" && c <= "9";
+  };
+
+  private isAlphaNumeric = ({ c }: { c: string }) => {
+    return this.isAlpha({ c }) || this.isDigit({ c });
   };
 
   private string = () => {

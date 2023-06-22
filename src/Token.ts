@@ -1,4 +1,48 @@
-import { TokenType } from "./TokenType";
+export type TokenType =
+  // single-character tokens
+  | "left_paren"
+  | "right_paren"
+  | "left_brace"
+  | "right_brace"
+  | "comma"
+  | "dot"
+  | "minus"
+  | "plus"
+  | "semicolon"
+  | "slash"
+  | "star"
+  // one or two character tokens
+  | "bang"
+  | "bang_equal"
+  | "equal"
+  | "equal_equal"
+  | "greater"
+  | "greater_equal"
+  | "less"
+  | "less_equal"
+  // literals
+  | "identifier"
+  | "string"
+  | "number"
+  // keywords
+  | "and"
+  | "class"
+  | "else"
+  | "false"
+  | "fun"
+  | "for"
+  | "if"
+  | "nil"
+  | "or"
+  | "print"
+  | "return"
+  | "super"
+  | "this"
+  | "true"
+  | "var"
+  | "while"
+  // end of file
+  | "eof";
 
 export type TokenCtor = {
   type: TokenType;

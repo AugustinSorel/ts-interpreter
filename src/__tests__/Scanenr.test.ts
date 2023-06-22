@@ -120,4 +120,49 @@ describe("Scanner", () => {
       new Token({ type: "eof", lexeme: "", literal: null, line: 1 }),
     ]);
   });
+
+  it("should return all correct keywords", () => {
+    const source =
+      "and class else false for fun if nil or print return super this true var while";
+
+    const scanner = new Scanner({ source });
+    const tokens = scanner.scanTokens();
+
+    expect(tokens).toEqual([
+      new Token({ type: "and", lexeme: "and", literal: null, line: 1 }),
+      new Token({ type: "class", lexeme: "class", literal: null, line: 1 }),
+      new Token({ type: "else", lexeme: "else", literal: null, line: 1 }),
+      new Token({ type: "false", lexeme: "false", literal: null, line: 1 }),
+      new Token({ type: "for", lexeme: "for", literal: null, line: 1 }),
+      new Token({ type: "fun", lexeme: "fun", literal: null, line: 1 }),
+      new Token({ type: "if", lexeme: "if", literal: null, line: 1 }),
+      new Token({ type: "nil", lexeme: "nil", literal: null, line: 1 }),
+      new Token({ type: "or", lexeme: "or", literal: null, line: 1 }),
+      new Token({ type: "print", lexeme: "print", literal: null, line: 1 }),
+      new Token({ type: "return", lexeme: "return", literal: null, line: 1 }),
+      new Token({ type: "super", lexeme: "super", literal: null, line: 1 }),
+      new Token({ type: "this", lexeme: "this", literal: null, line: 1 }),
+      new Token({ type: "true", lexeme: "true", literal: null, line: 1 }),
+      new Token({ type: "var", lexeme: "var", literal: null, line: 1 }),
+      new Token({ type: "while", lexeme: "while", literal: null, line: 1 }),
+      new Token({ type: "eof", lexeme: "", literal: null, line: 1 }),
+    ]);
+  });
+
+  it("should return correct identifier", () => {
+    const source = "identifier";
+
+    const scanner = new Scanner({ source });
+    const tokens = scanner.scanTokens();
+
+    expect(tokens).toEqual([
+      new Token({
+        type: "identifier",
+        lexeme: "identifier",
+        literal: null,
+        line: 1,
+      }),
+      new Token({ type: "eof", lexeme: "", literal: null, line: 1 }),
+    ]);
+  });
 });
