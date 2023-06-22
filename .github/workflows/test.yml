@@ -1,6 +1,7 @@
 name: Run vitest tests
 
 on:
+  pull_request:
   push:
     branches:
       - main # Change this to your branch name if different
