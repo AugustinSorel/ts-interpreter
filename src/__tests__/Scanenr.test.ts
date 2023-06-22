@@ -120,4 +120,8 @@ describe("Scanner", () => {
       new Token({ type: "eof", lexeme: "", literal: null, line: 1 }),
     ]);
   });
+
+  it("should error", () => {
+    expect(true).toBe(false);
+  });
 });
