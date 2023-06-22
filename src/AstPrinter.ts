@@ -32,11 +32,15 @@ export class AstPrinter implements Visitor<string> {
   };
 
   private parenthesize = (props: { name: string; exprs: Expr[] }): string => {
-    return (
-      props.exprs.reduce(
-        (str, expr) => str + ` ${expr.accept({ visitor: this })}`,
-        `(${props.name}`
-      ) + ")"
-    );
+    let str = "";
+
+    str += `(${props.name}`;
+
+    for (const expr of props.exprs) {
+      str += ` ${expr.accept({ visitor: this })}`;
+    }
+
+    str += ")";
+    return str;
   };
 }
