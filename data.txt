@@ -11,8 +11,6 @@
 
 () {}
 
-$
-
 /* 
   this is a block comment
   it can span multiple lines

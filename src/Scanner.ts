@@ -1,6 +1,7 @@
-import { error } from ".";
-import { Token, TokenCtor } from "./Token";
+import type { TokenCtor } from "./Token";
 import type { TokenType } from "./TokenType";
+import { Shell } from "./Shell";
+import { Token } from "./Token";
 
 export class Scanner {
   private source: string;
@@ -90,6 +91,7 @@ export class Scanner {
         });
         break;
       case "/":
+        // TODO: add methods
         if (this.match({ expected: "/" })) {
           while (this.peek() !== "\n" && !this.isAtEnd()) {
             this.advance();
@@ -106,7 +108,10 @@ export class Scanner {
             this.advance();
           }
           if (this.isAtEnd()) {
-            error({ line: this.line, message: "Unterminated block comment." });
+            Shell.error({
+              line: this.line,
+              message: "Unterminated block comment.",
+            });
           } else {
             this.advance();
             this.advance();
@@ -129,7 +134,10 @@ export class Scanner {
         if (this.isDigit({ c })) {
           this.number();
         } else {
-          error({ line: this.line, message: `Unexpected character: ${c}` });
+          Shell.error({
+            line: this.line,
+            message: `Unexpected character: ${c}`,
+          });
         }
         break;
     }
@@ -167,7 +175,7 @@ export class Scanner {
     }
 
     if (this.isAtEnd()) {
-      error({ line: this.line, message: "Unterminated string." });
+      Shell.error({ line: this.line, message: "Unterminated string." });
       return;
     }
 
