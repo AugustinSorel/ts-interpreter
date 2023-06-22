@@ -27,6 +27,7 @@ export class Shell {
     }
   };
 
+  //FIXME: throw error instead of logging
   public static error = ({ line, message }: Error) => {
     this.report({ line, where: "", message });
   };

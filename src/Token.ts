@@ -53,7 +53,7 @@ export type TokenCtor = {
 
 export class Token {
   private type: TokenCtor["type"];
-  private lexeme: TokenCtor["lexeme"];
+  public lexeme: TokenCtor["lexeme"];
   private literal: TokenCtor["literal"];
   private line: TokenCtor["line"];
 
