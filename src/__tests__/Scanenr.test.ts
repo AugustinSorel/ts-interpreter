@@ -121,6 +121,7 @@ describe("Scanner", () => {
     ]);
   });
 
+  //TODO:to remove
   it("should error", () => {
     expect(true).toBe(false);
   });
