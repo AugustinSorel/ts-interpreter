@@ -112,11 +112,15 @@ export class Scanner {
       case "/":
         if (this.match({ expected: "/" })) {
           this.singleComment();
-        } else if (this.match({ expected: "*" })) {
-          this.blockComment();
-        } else {
-          this.addToken({ type: "slash" });
+          break;
         }
+
+        if (this.match({ expected: "*" })) {
+          this.blockComment();
+          break;
+        }
+
+        this.addToken({ type: "slash" });
         break;
       case '"':
         this.string();
@@ -131,14 +135,15 @@ export class Scanner {
       default:
         if (this.isDigit({ c })) {
           this.number();
-        } else if (this.isAlpha({ c })) {
-          this.identifier();
-        } else {
-          Shell.error({
-            line: this.line,
-            message: `Unexpected character: ${c}`,
-          });
+          break;
         }
+
+        if (this.isAlpha({ c })) {
+          this.identifier();
+          break;
+        }
+
+        Shell.error({ line: this.line, message: `Unexpected character: ${c}` });
         break;
     }
   };
@@ -156,15 +161,16 @@ export class Scanner {
       }
       this.advance();
     }
+
     if (this.isAtEnd()) {
-      Shell.error({
+      return Shell.error({
         line: this.line,
         message: "Unterminated block comment.",
       });
-    } else {
-      this.advance();
-      this.advance();
     }
+
+    this.advance();
+    this.advance();
   };
 
   private number = () => {
