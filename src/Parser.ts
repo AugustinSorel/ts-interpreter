@@ -1,4 +1,4 @@
-import { Binary, Expr, Grouping, Literal, Unary } from "./Expr";
+import { Binary, Conditional, Expr, Grouping, Literal, Unary } from "./Expr";
 import { Shell } from "./Shell";
 import { Token, TokenType } from "./Token";
 
@@ -22,7 +22,20 @@ export class Parser {
   };
 
   private expression = () => {
-    return this.equality();
+    return this.conditional();
+  };
+
+  private conditional = () => {
+    let expr = this.equality();
+
+    if (this.match({ types: ["question"] })) {
+      const thenBranch = this.expression();
+      this.consume({ type: "colon", message: "Expect ')' after expression." });
+      const elseBranch = this.conditional();
+      expr = new Conditional({ expr, thenBranch, elseBranch });
+    }
+
+    return expr;
   };
 
   private equality = () => {

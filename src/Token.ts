@@ -11,6 +11,8 @@ export type TokenType =
   | "semicolon"
   | "slash"
   | "star"
+  | "question"
+  | "colon"
   // one or two character tokens
   | "bang"
   | "bang_equal"

@@ -5,6 +5,7 @@ export type Visitor<R> = {
   visitGroupingExpr: ({ expr }: { expr: Grouping }) => R;
   visitLiteralExpr: ({ expr }: { expr: Literal }) => R;
   visitUnaryExpr: ({ expr }: { expr: Unary }) => R;
+  visitConditionalExpr: ({ expr }: { expr: Conditional }) => R;
 };
 
 export abstract class Expr {
@@ -66,5 +67,30 @@ export class Unary extends Expr {
 
   public accept = <R>({ visitor }: { visitor: Visitor<R> }) => {
     return visitor.visitUnaryExpr({ expr: this });
+  };
+}
+
+export class Conditional extends Expr {
+  public expr: Expr;
+  public thenBranch: Expr;
+  public elseBranch: Expr;
+
+  constructor({
+    expr,
+    thenBranch,
+    elseBranch,
+  }: {
+    expr: Expr;
+    thenBranch: Expr;
+    elseBranch: Expr;
+  }) {
+    super();
+    this.expr = expr;
+    this.thenBranch = thenBranch;
+    this.elseBranch = elseBranch;
+  }
+
+  public accept = <R>({ visitor }: { visitor: Visitor<R> }) => {
+    return visitor.visitConditionalExpr({ expr: this });
   };
 }

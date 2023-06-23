@@ -3,7 +3,9 @@
 ## Grammar
 
 ```txt
-expression → equality ;
+expression → conditional ;
+
+conditional → equality ("?" expression ":" conditional)? ;
 
 equality → comparison ( ( "!=" | "==" ) comparison )* ;
 

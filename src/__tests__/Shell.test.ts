@@ -180,3 +180,72 @@ describe("Grouping Expressions", () => {
     expect(expr).toBeNull();
   });
 });
+
+describe("Conditional Expressions", () => {
+  it("should be able to parse a conditional expression", () => {
+    const source = "1 > 2 ? 3 : 4";
+    const expr = getExpression({ source });
+
+    if (!expr) {
+      throw new Error("No expression returned from parser");
+    }
+
+    const expected = "(conditional (> 1 2) 3 4)";
+    expect(new AstPrinter().print({ expr })).toEqual(expected);
+  });
+
+  it("should be able to parse a conditional expression with a unary expression", () => {
+    const source = "1 > -2 ? 3 : 4";
+    const expr = getExpression({ source });
+
+    if (!expr) {
+      throw new Error("No expression returned from parser");
+    }
+
+    const expected = "(conditional (> 1 (- 2)) 3 4)";
+    expect(new AstPrinter().print({ expr })).toEqual(expected);
+  });
+
+  it("should be able to parse a conditional expression with a binary expression", () => {
+    const source = "1 > 2 + 3 ? 4 : 5";
+    const expr = getExpression({ source });
+
+    if (!expr) {
+      throw new Error("No expression returned from parser");
+    }
+
+    const expected = "(conditional (> 1 (+ 2 3)) 4 5)";
+    expect(new AstPrinter().print({ expr })).toEqual(expected);
+  });
+
+  it("should be able to parse a conditional expression with a grouping expression", () => {
+    const source = "1 > (2 + 3) ? 4 : 5";
+    const expr = getExpression({ source });
+
+    if (!expr) {
+      throw new Error("No expression returned from parser");
+    }
+
+    const expected = "(conditional (> 1 (group (+ 2 3))) 4 5)";
+    expect(new AstPrinter().print({ expr })).toEqual(expected);
+  });
+
+  it("should be able to parse a conditional expression with a conditional expression", () => {
+    const source = "1 > 2 ? 3 : 4 ? 5 : 6";
+    const expr = getExpression({ source });
+
+    if (!expr) {
+      throw new Error("No expression returned from parser");
+    }
+
+    const expected = "(conditional (> 1 2) 3 (conditional 4 5 6))";
+    expect(new AstPrinter().print({ expr })).toEqual(expected);
+  });
+
+  it("should return an error if conditional expression is not followed by an expression", () => {
+    const source = "1 > 2 ? 3 :";
+    const expr = getExpression({ source });
+
+    expect(expr).toBeNull();
+  });
+});

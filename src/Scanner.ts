@@ -89,6 +89,12 @@ export class Scanner {
       case "*":
         this.addToken({ type: "star" });
         break;
+      case "?":
+        this.addToken({ type: "question" });
+        break;
+      case ":":
+        this.addToken({ type: "colon" });
+        break;
       case "!":
         this.addToken({
           type: this.match({ expected: "=" }) ? "bang_equal" : "bang",

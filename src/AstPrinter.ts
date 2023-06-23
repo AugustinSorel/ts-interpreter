@@ -1,4 +1,12 @@
-import type { Binary, Expr, Grouping, Literal, Unary, Visitor } from "./Expr";
+import type {
+  Binary,
+  Conditional,
+  Expr,
+  Grouping,
+  Literal,
+  Unary,
+  Visitor,
+} from "./Expr";
 
 export class AstPrinter implements Visitor<string> {
   public print = ({ expr }: { expr: Expr }): string => {
@@ -28,6 +36,13 @@ export class AstPrinter implements Visitor<string> {
     return this.parenthesize({
       name: expr.operator.lexeme,
       exprs: [expr.right],
+    });
+  };
+
+  public visitConditionalExpr = ({ expr }: { expr: Conditional }) => {
+    return this.parenthesize({
+      name: "conditional",
+      exprs: [expr.expr, expr.thenBranch, expr.elseBranch],
     });
   };
 
