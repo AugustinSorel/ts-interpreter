@@ -49,7 +49,7 @@ export type TokenType =
 export type TokenCtor = {
   type: TokenType;
   lexeme: string;
-  literal: Object | null;
+  literal: string | number | boolean | null;
   line: number;
 };
 
