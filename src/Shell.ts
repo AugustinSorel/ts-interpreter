@@ -22,7 +22,7 @@ export class Shell {
     const expr = parser.parse();
 
     if (Shell.hadError || !expr) {
-      return null;
+      process.exit(65);
     }
 
     return expr;
@@ -36,13 +36,13 @@ export class Shell {
     if (props.token.type === "eof") {
       this.report({
         line: props.token.line,
-        where: " at end",
+        where: "at end",
         message: props.message,
       });
     } else {
       this.report({
         line: props.token.line,
-        where: ` at '${props.token.lexeme}'`,
+        where: `at '${props.token.lexeme}'`,
         message: props.message,
       });
     }

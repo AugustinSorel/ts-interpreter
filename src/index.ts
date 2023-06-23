@@ -19,10 +19,6 @@ const main = async () => {
   const shell = new Shell();
   const output = shell.run({ source });
 
-  if (!output) {
-    throw "No output returned from parser";
-  }
-
   const astPrinter = new AstPrinter();
 
   console.log(astPrinter.print({ expr: output }));
