@@ -124,6 +124,44 @@ export class Parser {
       return new Grouping({ expression: exp });
     }
 
+    if (this.match({ types: ["bang_equal", "equal_equal"] })) {
+      this.error({
+        token: this.previous(),
+        message: "Missing left-hand operand.",
+      });
+      this.equality();
+      return null;
+    }
+
+    if (
+      this.match({ types: ["greater", "greater_equal", "less", "less_equal"] })
+    ) {
+      this.error({
+        token: this.previous(),
+        message: "Missing left-hand operand.",
+      });
+      this.comparison();
+      return null;
+    }
+
+    if (this.match({ types: ["plus"] })) {
+      this.error({
+        token: this.previous(),
+        message: "Missing left-hand operand.",
+      });
+      this.term();
+      return null;
+    }
+
+    if (this.match({ types: ["slash", "star"] })) {
+      this.error({
+        token: this.previous(),
+        message: "Missing left-hand operand.",
+      });
+      this.factor();
+      return null;
+    }
+
     throw this.error({ token: this.peek(), message: "Expect expression." });
   };
 
