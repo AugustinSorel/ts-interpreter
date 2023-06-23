@@ -1,16 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { Scanner } from "../Scanner";
-import { Parser } from "../Parser";
 import { AstPrinter } from "../AstPrinter";
+import { Shell } from "../Shell";
 
 const getExpression = ({ source }: { source: string }) => {
-  const scanner = new Scanner({ source });
-  const tokens = scanner.scanTokens();
-
-  const parser = new Parser({ tokens });
-  const expr = parser.parse();
-
-  return expr;
+  const shell = new Shell();
+  return shell.run({ source });
 };
 
 describe("Literal Values", () => {
@@ -254,5 +248,43 @@ describe("Conditional Expressions", () => {
     const expr = getExpression({ source });
 
     expect(expr).toBeNull();
+  });
+});
+
+describe("Comments", () => {
+  it("should be able to parse a comment", () => {
+    const source = "// This is a comment";
+    const expr = getExpression({ source });
+
+    expect(expr).toBeNull();
+  });
+
+  it("should be able to parse a comment with a unary expression", () => {
+    const source = "// This is a comment\n -2";
+    const expr = getExpression({ source });
+
+    if (!expr) {
+      throw new Error("No expression returned from parser");
+    }
+
+    expect(new AstPrinter().print({ expr })).toEqual("(- 2)");
+  });
+
+  it("should be able to pase a block comment", () => {
+    const source = "/* This \n is a block \n comment */";
+    const expr = getExpression({ source });
+
+    expect(expr).toBeNull();
+  });
+
+  it("should be able to parse a block comment with a unary expression", () => {
+    const source = "/* This \n is a block \n comment */ -2";
+    const expr = getExpression({ source });
+
+    if (!expr) {
+      throw new Error("No expression returned from parser");
+    }
+
+    expect(new AstPrinter().print({ expr })).toEqual("(- 2)");
   });
 });

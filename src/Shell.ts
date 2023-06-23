@@ -1,4 +1,3 @@
-import { AstPrinter } from "./AstPrinter";
 import { Parser } from "./Parser";
 import { Scanner } from "./Scanner";
 import { Token } from "./Token";
@@ -11,17 +10,11 @@ type Error = {
 export class Shell {
   private static hadError: boolean;
 
-  constructor({ source }: { source: string }) {
+  constructor() {
     Shell.hadError = false;
-
-    this.run({ source });
-
-    if (Shell.hadError) {
-      process.exit(65);
-    }
   }
 
-  private run = ({ source }: { source: string }) => {
+  public run = ({ source }: { source: string }) => {
     const scanner = new Scanner({ source });
     const tokens = scanner.scanTokens();
 
@@ -29,10 +22,10 @@ export class Shell {
     const expr = parser.parse();
 
     if (Shell.hadError || !expr) {
-      return;
+      return null;
     }
 
-    console.log(new AstPrinter().print({ expr }));
+    return expr;
   };
 
   public static error = ({ line, message }: Error) => {
