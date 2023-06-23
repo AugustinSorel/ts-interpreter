@@ -1,10 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { AstPrinter } from "../AstPrinter";
-import { Shell } from "../Shell";
+import { Scanner } from "../Scanner";
+import { Parser } from "../Parser";
 
 const getExpression = ({ source }: { source: string }) => {
-  const shell = new Shell();
-  return shell.run({ source });
+  const scanner = new Scanner({ source });
+  const tokens = scanner.scanTokens();
+
+  const parser = new Parser({ tokens });
+  const expr = parser.parse();
+
+  return expr;
 };
 
 describe("Literal Values", () => {
