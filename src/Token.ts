@@ -52,10 +52,10 @@ export type TokenCtor = {
 };
 
 export class Token {
-  private type: TokenCtor["type"];
+  public type: TokenCtor["type"];
   public lexeme: TokenCtor["lexeme"];
-  private literal: TokenCtor["literal"];
-  private line: TokenCtor["line"];
+  public literal: TokenCtor["literal"];
+  public line: TokenCtor["line"];
 
   constructor(props: TokenCtor) {
     this.type = props.type;

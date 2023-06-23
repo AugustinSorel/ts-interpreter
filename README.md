@@ -2,14 +2,18 @@
 
 ## Grammar
 
-expression → literal | unary | binary | grouping ;
+```txt
+expression → equality ;
 
-literal → NUMBER | STRING | "true" | "false" | "nil" ;
+equality → comparison ( ( "!=" | "==" ) comparison )* ;
 
-grouping → "(" expression ")" ;
+comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 
-unary → ( "-" | "!" ) expression ;
+term → factor ( ( "-" | "+" ) factor )* ;
 
-binary → expression operator expression ;
+factor → unary ( ( "/" | "*" ) unary )* ;
 
-operator → "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "\*" | "/" ;
+unary → ( "!" | "-" ) unary | primary ;
+
+primary → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
+```

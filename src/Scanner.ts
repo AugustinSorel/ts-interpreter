@@ -3,7 +3,7 @@ import type { TokenType } from "./Token";
 import { Shell } from "./Shell";
 import { Token } from "./Token";
 
-const KEYWORDS: Record<string, TokenType> = {
+export const KEYWORDS: Record<string, TokenType> = {
   and: "and",
   class: "class",
   else: "else",

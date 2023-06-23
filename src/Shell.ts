@@ -1,4 +1,7 @@
+import { AstPrinter } from "./AstPrinter";
+import { Parser } from "./Parser";
 import { Scanner } from "./Scanner";
+import { Token } from "./Token";
 
 type Error = {
   line: number;
@@ -22,14 +25,34 @@ export class Shell {
     const scanner = new Scanner({ source });
     const tokens = scanner.scanTokens();
 
-    for (const token of tokens) {
-      console.log(token);
+    const parser = new Parser({ tokens });
+    const expr = parser.parse();
+
+    if (Shell.hadError || !expr) {
+      return;
     }
+
+    console.log(new AstPrinter().print({ expr }));
   };
 
-  //FIXME: throw error instead of logging
   public static error = ({ line, message }: Error) => {
     this.report({ line, where: "", message });
+  };
+
+  public static errorAt = (props: { token: Token; message: string }) => {
+    if (props.token.type === "eof") {
+      this.report({
+        line: props.token.line,
+        where: " at end",
+        message: props.message,
+      });
+    } else {
+      this.report({
+        line: props.token.line,
+        where: ` at '${props.token.lexeme}'`,
+        message: props.message,
+      });
+    }
   };
 
   private static report = (props: Error & { where: string }) => {

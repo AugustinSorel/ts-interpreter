@@ -44,7 +44,7 @@ export class Grouping extends Expr {
 export class Literal extends Expr {
   public value: TokenCtor["literal"];
 
-  constructor({ value }: { value: Object }) {
+  constructor({ value }: { value: TokenCtor["literal"] }) {
     super();
     this.value = value;
   }
