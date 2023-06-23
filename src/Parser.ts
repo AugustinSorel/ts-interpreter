@@ -95,7 +95,7 @@ export class Parser {
       return new Unary({ operator, right });
     }
 
-    return this.primary();
+    return this.primary() as Expr;
   };
 
   private primary = () => {
