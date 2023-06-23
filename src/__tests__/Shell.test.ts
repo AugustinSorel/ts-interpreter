@@ -148,6 +148,13 @@ describe("Binary Expressions", () => {
 
     expect(expr).toBeNull();
   });
+
+  it("should return an error if binary expression is not followed by an expression", () => {
+    const source = "== 1";
+    const expr = getExpression({ source });
+
+    expect(expr).toBeNull();
+  });
 });
 
 describe("Grouping Expressions", () => {
