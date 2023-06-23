@@ -17,5 +17,11 @@ factor → unary ( ( "/" | "*" ) unary )* ;
 
 unary → ( "!" | "-" ) unary | primary ;
 
-primary → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
+primary  → NUMBER | STRING | "true" | "false" | "nil"
+           | "(" expression ")"
+           // Error productions...
+           | ( "!=" | "==" ) equality
+           | ( ">" | ">=" | "<" | "<=" ) comparison
+           | ( "+" ) term
+           | ( "/" | "*" ) factor
 ```
