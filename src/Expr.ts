@@ -1,4 +1,4 @@
-import type { Token, TokenCtor } from "./Token";
+import type { Token, TokenLiteral } from "./Token";
 
 export type Visitor<R> = {
   visitBinaryExpr: ({ expr }: { expr: Binary }) => R;
@@ -43,9 +43,9 @@ export class Grouping extends Expr {
 }
 
 export class Literal extends Expr {
-  public value: TokenCtor["literal"];
+  public value: TokenLiteral;
 
-  constructor({ value }: { value: TokenCtor["literal"] }) {
+  constructor({ value }: { value: TokenLiteral }) {
     super();
     this.value = value;
   }

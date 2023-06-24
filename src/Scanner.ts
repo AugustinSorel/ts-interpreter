@@ -1,4 +1,4 @@
-import type { TokenCtor } from "./Token";
+import type { TokenLiteral } from "./Token";
 import type { TokenType } from "./Token";
 import { Shell } from "./Shell";
 import { Token } from "./Token";
@@ -266,7 +266,7 @@ export class Scanner {
 
   private addTokenWithLiteral = (props: {
     type: TokenType;
-    literal: TokenCtor["literal"];
+    literal: TokenLiteral;
   }) => {
     const text = this.source.substring(this.start, this.current);
 

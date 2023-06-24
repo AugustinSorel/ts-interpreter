@@ -46,10 +46,12 @@ export type TokenType =
   // end of file
   | "eof";
 
-export type TokenCtor = {
+export type TokenLiteral = string | number | boolean | null;
+
+type TokenCtor = {
   type: TokenType;
   lexeme: string;
-  literal: string | number | boolean | null;
+  literal: TokenLiteral;
   line: number;
 };
 

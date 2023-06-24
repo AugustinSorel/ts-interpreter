@@ -1,9 +1,10 @@
 import { Expr } from "./Expr";
 import { Binary, Conditional, Grouping, Literal, Unary, Visitor } from "./Expr";
 import { Shell } from "./Shell";
-import { Token, TokenCtor } from "./Token";
+import { Token } from "./Token";
+import type { TokenLiteral } from "./Token";
 
-export class Interpreter implements Visitor<TokenCtor["literal"]> {
+export class Interpreter implements Visitor<TokenLiteral> {
   public interpret = ({ expression }: { expression: Expr }) => {
     try {
       const value = this.evalute({ expr: expression });
@@ -120,7 +121,7 @@ export class Interpreter implements Visitor<TokenCtor["literal"]> {
 
   private checkNumberOperand = (props: {
     operator: Token;
-    operand: TokenCtor["literal"];
+    operand: TokenLiteral;
   }) => {
     if (typeof props.operand === "number") {
       return;
@@ -134,8 +135,8 @@ export class Interpreter implements Visitor<TokenCtor["literal"]> {
 
   private checkNumberOperands = (props: {
     operator: Token;
-    left: TokenCtor["literal"];
-    right: TokenCtor["literal"];
+    left: TokenLiteral;
+    right: TokenLiteral;
   }) => {
     if (typeof props.left === "number" && typeof props.right === "number") {
       return;
@@ -147,11 +148,11 @@ export class Interpreter implements Visitor<TokenCtor["literal"]> {
     });
   };
 
-  private evalute = ({ expr }: { expr: Expr }): TokenCtor["literal"] => {
+  private evalute = ({ expr }: { expr: Expr }): TokenLiteral => {
     return expr.accept({ visitor: this });
   };
 
-  private isTruthy = ({ object }: { object: TokenCtor["literal"] }) => {
+  private isTruthy = ({ object }: { object: TokenLiteral }) => {
     if (object == null) {
       return false;
     }
@@ -163,7 +164,7 @@ export class Interpreter implements Visitor<TokenCtor["literal"]> {
     return true;
   };
 
-  private stringify = ({ object }: { object: TokenCtor["literal"] }) => {
+  private stringify = ({ object }: { object: TokenLiteral }) => {
     if (object == null) {
       return "nil";
     }
