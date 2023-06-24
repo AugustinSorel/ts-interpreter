@@ -3,25 +3,33 @@
 ## Grammar
 
 ```txt
-expression → conditional ;
+program        → statement* EOF ;
 
-conditional → equality ("?" expression ":" conditional)? ;
+statement      → exprStmt | printStmt ;
 
-equality → comparison ( ( "!=" | "==" ) comparison )* ;
+exprStmt       → expression ";" ;
 
-comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+printStmt      → "print" expression ";" ;
 
-term → factor ( ( "-" | "+" ) factor )* ;
+expression     → conditional ;
 
-factor → unary ( ( "/" | "*" ) unary )* ;
+conditional    → equality ("?" expression ":" conditional)? ;
 
-unary → ( "!" | "-" ) unary | primary ;
+equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 
-primary  → NUMBER | STRING | "true" | "false" | "nil"
-           | "(" expression ")"
-           // Error productions...
-           | ( "!=" | "==" ) equality
-           | ( ">" | ">=" | "<" | "<=" ) comparison
-           | ( "+" ) term
-           | ( "/" | "*" ) factor
+comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+
+term           → factor ( ( "-" | "+" ) factor )* ;
+
+factor         → unary ( ( "/" | "*" ) unary )* ;
+
+unary          → ( "!" | "-" ) unary | primary ;
+
+primary        → NUMBER | STRING | "true" | "false" | "nil"
+                 | "(" expression ")"
+                 // Error productions...
+                 | ( "!=" | "==" ) equality
+                 | ( ">" | ">=" | "<" | "<=" ) comparison
+                 | ( "+" ) term
+                 | ( "/" | "*" ) factor
 ```

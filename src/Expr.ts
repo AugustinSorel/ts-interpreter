@@ -1,6 +1,6 @@
 import type { Token, TokenLiteral } from "./Token";
 
-export type Visitor<R> = {
+export type VisitorExpr<R> = {
   visitBinaryExpr: ({ expr }: { expr: Binary }) => R;
   visitGroupingExpr: ({ expr }: { expr: Grouping }) => R;
   visitLiteralExpr: ({ expr }: { expr: Literal }) => R;
@@ -9,7 +9,7 @@ export type Visitor<R> = {
 };
 
 export abstract class Expr {
-  abstract accept: <R>({ visitor }: { visitor: Visitor<R> }) => R;
+  abstract accept: <R>({ visitor }: { visitor: VisitorExpr<R> }) => R;
 }
 
 export class Binary extends Expr {
@@ -24,7 +24,7 @@ export class Binary extends Expr {
     this.right = props.right;
   }
 
-  public accept = <R>({ visitor }: { visitor: Visitor<R> }) => {
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
     return visitor.visitBinaryExpr({ expr: this });
   };
 }
@@ -37,7 +37,7 @@ export class Grouping extends Expr {
     this.expression = expression;
   }
 
-  public accept = <R>({ visitor }: { visitor: Visitor<R> }) => {
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
     return visitor.visitGroupingExpr({ expr: this });
   };
 }
@@ -50,7 +50,7 @@ export class Literal extends Expr {
     this.value = value;
   }
 
-  public accept = <R>({ visitor }: { visitor: Visitor<R> }) => {
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
     return visitor.visitLiteralExpr({ expr: this });
   };
 }
@@ -65,7 +65,7 @@ export class Unary extends Expr {
     this.right = right;
   }
 
-  public accept = <R>({ visitor }: { visitor: Visitor<R> }) => {
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
     return visitor.visitUnaryExpr({ expr: this });
   };
 }
@@ -90,7 +90,7 @@ export class Conditional extends Expr {
     this.elseBranch = elseBranch;
   }
 
-  public accept = <R>({ visitor }: { visitor: Visitor<R> }) => {
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
     return visitor.visitConditionalExpr({ expr: this });
   };
 }

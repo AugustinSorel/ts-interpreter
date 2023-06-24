@@ -17,8 +17,7 @@ const main = async () => {
   const source = await readSource();
 
   const shell = new Shell();
-  const output = shell.run({ source });
-  console.log(output);
+  shell.run({ source });
 };
 
 main();

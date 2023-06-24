@@ -1,5 +1,6 @@
 import { Binary, Conditional, Expr, Grouping, Literal, Unary } from "./Expr";
 import { Shell } from "./Shell";
+import { Expression, Print } from "./Stmt";
 import { Token, TokenType } from "./Token";
 
 export class ParseError extends Error {}
@@ -14,11 +15,43 @@ export class Parser {
   }
 
   public parse = () => {
-    try {
-      return this.expression();
-    } catch (error) {
-      return null;
+    const statements = [];
+
+    while (!this.isAtEnd()) {
+      statements.push(this.statment());
     }
+
+    return statements;
+  };
+
+  private statment = () => {
+    if (this.match({ types: ["print"] })) {
+      return this.printStatment();
+    }
+
+    return this.expressionStatment();
+  };
+
+  private expressionStatment = () => {
+    const expr = this.expression();
+
+    this.consume({
+      type: "semicolon",
+      message: "Expect ';' after value.",
+    });
+
+    return new Expression({ expression: expr });
+  };
+
+  private printStatment = () => {
+    const value = this.expression();
+
+    this.consume({
+      type: "semicolon",
+      message: "Expect ';' after value.",
+    });
+
+    return new Print({ expression: value });
   };
 
   private expression = () => {

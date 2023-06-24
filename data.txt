@@ -1,3 +1,7 @@
-(((10 + 10) / 20) - 1)
+print "one";
+print true;
+print 2 + 1;
 
+print false ? 1 : 2;
 
+print "Hello" + "World";

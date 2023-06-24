@@ -5,10 +5,10 @@ import type {
   Grouping,
   Literal,
   Unary,
-  Visitor,
+  VisitorExpr,
 } from "./Expr";
 
-export class AstPrinter implements Visitor<string> {
+export class AstPrinter implements VisitorExpr<string> {
   public print = ({ expr }: { expr: Expr }): string => {
     return expr.accept({ visitor: this });
   };

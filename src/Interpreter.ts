@@ -1,21 +1,47 @@
-import { Expr } from "./Expr";
-import { Binary, Conditional, Grouping, Literal, Unary, Visitor } from "./Expr";
+import {
+  Binary,
+  Conditional,
+  Grouping,
+  Expr,
+  Literal,
+  Unary,
+  VisitorExpr,
+} from "./Expr";
 import { Shell } from "./Shell";
+import { Expression, Print, Stmt, VisitorStmt } from "./Stmt";
 import { Token } from "./Token";
 import type { TokenLiteral } from "./Token";
 
-export class Interpreter implements Visitor<TokenLiteral> {
-  public interpret = ({ expression }: { expression: Expr }) => {
+export class Interpreter
+  implements VisitorExpr<TokenLiteral>, VisitorStmt<void>
+{
+  public interpret = ({ statments }: { statments: Stmt[] }) => {
     try {
-      const value = this.evalute({ expr: expression });
-      return this.stringify({ object: value });
+      for (const statment of statments) {
+        this.execute({ statment });
+      }
     } catch (error) {
       if (error instanceof RuntimeError) {
         Shell.runtimeError({ error });
       }
+
       console.error(`unhandled error ${error}`);
-      return null;
     }
+  };
+
+  private execute = ({ statment }: { statment: Stmt }) => {
+    statment.accept({ visitor: this });
+  };
+
+  public visitExpressionStmt = ({ stmt }: { stmt: Expression }) => {
+    this.evalute({ expr: stmt.expression });
+    return null;
+  };
+
+  public visitPrintStmt = ({ stmt }: { stmt: Print }) => {
+    const value = this.evalute({ expr: stmt.expression });
+    console.log(this.stringify({ object: value }));
+    return null;
   };
 
   public visitUnaryExpr = ({ expr }: { expr: Unary }) => {
@@ -116,6 +142,11 @@ export class Interpreter implements Visitor<TokenLiteral> {
       return this.evalute({ expr: expr.elseBranch });
     }
 
+    return null;
+  };
+
+  public visitiExpressionStmt = ({ stmt }: { stmt: Expr }) => {
+    this.evalute({ expr: stmt });
     return null;
   };
 

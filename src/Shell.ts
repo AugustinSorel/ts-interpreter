@@ -22,18 +22,18 @@ export class Shell {
     const tokens = scanner.scanTokens();
 
     const parser = new Parser({ tokens });
-    const expr = parser.parse();
+    const statments = parser.parse();
 
     if (Shell.hadError) {
       process.exit(65);
     }
 
-    if (Shell.hadRuntimeError || !expr) {
+    if (Shell.hadRuntimeError) {
       process.exit(70);
     }
 
     const interpreter = new Interpreter();
-    return interpreter.interpret({ expression: expr });
+    interpreter.interpret({ statments });
   };
 
   public static error = ({ line, message }: Error) => {
