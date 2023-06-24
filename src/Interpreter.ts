@@ -52,6 +52,14 @@ export class Interpreter implements Visitor<TokenCtor["literal"]> {
           return `${left}${right}`;
         }
 
+        if (typeof left === "string" && typeof right === "number") {
+          return `${left}${right}`;
+        }
+
+        if (typeof left === "number" && typeof right === "string") {
+          return `${left}${right}`;
+        }
+
         throw new RuntimeError({
           token: expr.operator,
           message: `Operands must be two numbers or two strings. But got ${left} ${expr.operator.type} ${right}`,

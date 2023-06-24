@@ -10,4 +10,22 @@ describe("string", () => {
 
     expect(output).toBe("hello world");
   });
+
+  it("should do string concat correctly", () => {
+    const source = `"hello" + " " + "world"`;
+
+    const shell = new Shell();
+    const output = shell.run({ source });
+
+    expect(output).toBe("hello world");
+  });
+
+  it("should do string concat correctly", () => {
+    const source = `"hello " + 3`;
+
+    const shell = new Shell();
+    const output = shell.run({ source });
+
+    expect(output).toBe("hello 3");
+  });
 });
