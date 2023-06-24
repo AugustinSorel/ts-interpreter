@@ -21,11 +21,11 @@ describe("string", () => {
   });
 
   it("should do string concat correctly", () => {
-    const source = `"hello " + 3`;
+    const source = `2 + " hello " + 3`;
 
     const shell = new Shell();
     const output = shell.run({ source });
 
-    expect(output).toBe("hello 3");
+    expect(output).toBe("2 hello 3");
   });
 });
