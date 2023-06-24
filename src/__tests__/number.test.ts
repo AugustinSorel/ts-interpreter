@@ -28,4 +28,13 @@ describe("Math", () => {
 
     expect(output).toBe("9");
   });
+
+  it("should error if division by zero", () => {
+    const source = "1/ (((10 + 10) / 20) - 1)";
+
+    const shell = new Shell();
+    const output = shell.run({ source });
+
+    expect(output).toBeNull();
+  });
 });

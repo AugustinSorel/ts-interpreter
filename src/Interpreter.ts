@@ -12,8 +12,8 @@ export class Interpreter implements Visitor<TokenCtor["literal"]> {
       if (error instanceof RuntimeError) {
         Shell.runtimeError({ error });
       }
-
       console.error(`unhandled error ${error}`);
+      return null;
     }
   };
 
@@ -42,6 +42,15 @@ export class Interpreter implements Visitor<TokenCtor["literal"]> {
       case "star":
         return +left * +right;
       case "slash":
+        this.checkNumberOperands({ operator: expr.operator, left, right });
+
+        if (+right === 0) {
+          throw new RuntimeError({
+            token: expr.operator,
+            message: "division by zero",
+          });
+        }
+
         return +left / +right;
       case "plus": {
         if (typeof left === "number" && typeof right === "number") {
