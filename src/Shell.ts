@@ -1,3 +1,4 @@
+import { Interpreter, RuntimeError } from "./Interpreter";
 import { Parser } from "./Parser";
 import { Scanner } from "./Scanner";
 import { Token } from "./Token";
@@ -9,9 +10,11 @@ type Error = {
 
 export class Shell {
   private static hadError: boolean;
+  private static hadRuntimeError: boolean;
 
   constructor() {
     Shell.hadError = false;
+    Shell.hadRuntimeError = false;
   }
 
   public run = ({ source }: { source: string }) => {
@@ -21,11 +24,16 @@ export class Shell {
     const parser = new Parser({ tokens });
     const expr = parser.parse();
 
-    if (Shell.hadError || !expr) {
+    if (Shell.hadError) {
       process.exit(65);
     }
 
-    return expr;
+    if (Shell.hadRuntimeError || !expr) {
+      process.exit(70);
+    }
+
+    const interpreter = new Interpreter();
+    return interpreter.interpret({ expression: expr });
   };
 
   public static error = ({ line, message }: Error) => {
@@ -46,6 +54,11 @@ export class Shell {
         message: props.message,
       });
     }
+  };
+
+  public static runtimeError = ({ error }: { error: RuntimeError }) => {
+    console.log(`${error.message} \n[line ${error.token.line}]`);
+    Shell.hadRuntimeError = true;
   };
 
   private static report = (props: Error & { where: string }) => {
