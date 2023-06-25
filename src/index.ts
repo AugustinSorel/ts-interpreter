@@ -12,8 +12,6 @@ const readSource = async () => {
   }
 };
 
-//TODO: add power operator
-//TODO: add modulo operator
 const main = async () => {
   const source = await readSource();
 
