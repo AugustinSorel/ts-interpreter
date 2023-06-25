@@ -23,17 +23,17 @@ export class Parser {
     this.current = 0;
   }
 
-  public parse = () => {
+  public parse = (): Stmt[] => {
     const statements = [];
 
     while (!this.isAtEnd()) {
       statements.push(this.declaration());
     }
 
-    return statements;
+    return statements.filter(Boolean) as Stmt[];
   };
 
-  private declaration = () => {
+  private declaration = (): Stmt | null => {
     try {
       if (this.match({ types: ["var"] })) {
         return this.varDeclaration();
@@ -78,7 +78,7 @@ export class Parser {
     return this.expressionStatment();
   };
 
-  private block = (): Stmt[] => {
+  private block = () => {
     const statements = [];
 
     while (!this.check({ type: "right_brace" }) && !this.isAtEnd()) {

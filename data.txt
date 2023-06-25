@@ -1,2 +1,1 @@
-var result = 2 % 3 == 2;
-print result;
+var x = t :;

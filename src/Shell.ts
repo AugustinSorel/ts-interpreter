@@ -1,4 +1,3 @@
-import { AstPrinter } from "./AstPrinter";
 import { Interpreter, RuntimeError } from "./Interpreter";
 import { Parser } from "./Parser";
 import { Scanner } from "./Scanner";
@@ -25,13 +24,13 @@ export class Shell {
     const parser = new Parser({ tokens });
     const statments = parser.parse();
 
-    if (Shell.hadError) {
-      process.exit(65);
-    }
-
-    if (Shell.hadRuntimeError) {
-      process.exit(70);
-    }
+    // if (Shell.hadError) {
+    //   process.exit(65);
+    // }
+    //
+    // if (Shell.hadRuntimeError) {
+    //   process.exit(70);
+    // }
 
     const interpreter = new Interpreter();
     interpreter.interpret({ statments });

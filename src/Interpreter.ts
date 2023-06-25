@@ -90,7 +90,7 @@ export class Interpreter
   };
 
   public visitVariableExpr = ({ expr }: { expr: Variable }) => {
-    return this.environment.get({ name: expr.name }) ?? null;
+    return this.environment.get({ name: expr.name });
   };
 
   public visitPrintStmt = ({ stmt }: { stmt: Print }) => {
@@ -183,6 +183,14 @@ export class Interpreter
           left,
           right,
         });
+
+        if (nums.right === 0) {
+          throw new RuntimeError({
+            token: expr.operator,
+            message: "mod by zero",
+          });
+        }
+
         return nums.left % nums.right;
       }
       case "star_star": {
