@@ -5,6 +5,7 @@ export type VisitorStmt<R> = {
   visitExpressionStmt: ({ stmt }: { stmt: Expression }) => R;
   visitPrintStmt: ({ stmt }: { stmt: Print }) => R;
   visitVarStmt: ({ stmt }: { stmt: Var }) => R;
+  visitBlockStmt: ({ stmt }: { stmt: Block }) => R;
 };
 
 export abstract class Stmt {
@@ -56,4 +57,17 @@ export class Var extends Stmt {
   public accept = <R>({ visitor }: { visitor: VisitorStmt<R> }) => {
     return visitor.visitVarStmt({ stmt: this });
   };
+}
+
+export class Block extends Stmt {
+  public statements;
+
+  constructor({ statements }: { statements: Stmt[] }) {
+    super();
+    this.statements = statements;
+  }
+
+  public accept<R>({ visitor }: { visitor: VisitorStmt<R> }) {
+    return visitor.visitBlockStmt({ stmt: this });
+  }
 }

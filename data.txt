@@ -1,8 +1,5 @@
-var x = 10;
-x = 12;
-
-var z = false ? 2 : 4;
-print z;
-
-
-print true ? x = 8 : x = 6;
+var a = 1;
+{
+  var a = a + 2;
+  print a;
+}

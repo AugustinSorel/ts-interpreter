@@ -58,7 +58,7 @@ export class Shell {
   };
 
   public static runtimeError = ({ error }: { error: RuntimeError }) => {
-    console.log(`${error.message} \n[line ${error.token.line}]`);
+    console.error(`${error.message} \n[line ${error.token.line}]`);
     Shell.hadRuntimeError = true;
   };
 

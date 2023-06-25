@@ -9,7 +9,7 @@ import {
   Variable,
 } from "./Expr";
 import { Shell } from "./Shell";
-import { Expression, Print, Var } from "./Stmt";
+import { Block, Expression, Print, Stmt, Var } from "./Stmt";
 import { Token, TokenType } from "./Token";
 
 export class ParseError extends Error {}
@@ -71,7 +71,22 @@ export class Parser {
       return this.printStatment();
     }
 
+    if (this.match({ types: ["left_brace"] })) {
+      return new Block({ statements: this.block() });
+    }
+
     return this.expressionStatment();
+  };
+
+  private block = (): Stmt[] => {
+    const statements = [];
+
+    while (!this.check({ type: "right_brace" }) && !this.isAtEnd()) {
+      statements.push(this.declaration() as Stmt);
+    }
+
+    this.consume({ type: "right_brace", message: "Expect '}' after block." });
+    return statements;
   };
 
   private expressionStatment = () => {

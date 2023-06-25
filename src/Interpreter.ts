@@ -11,7 +11,7 @@ import {
   Assign,
 } from "./Expr";
 import { Shell } from "./Shell";
-import { Expression, Print, Stmt, Var, VisitorStmt } from "./Stmt";
+import { Block, Expression, Print, Stmt, Var, VisitorStmt } from "./Stmt";
 import { Token } from "./Token";
 import type { TokenLiteral } from "./Token";
 
@@ -40,6 +40,31 @@ export class Interpreter
 
   private execute = ({ statment }: { statment: Stmt }) => {
     statment.accept({ visitor: this });
+  };
+
+  public visitBlockStmt = ({ stmt }: { stmt: Block }) => {
+    this.executeBlock({
+      statements: stmt.statements,
+      environment: new Environment({ enclosing: this.environment }),
+    });
+  };
+
+  public executeBlock = ({
+    statements,
+    environment,
+  }: {
+    statements: Stmt[];
+    environment: Environment;
+  }) => {
+    const previous = this.environment;
+    try {
+      this.environment = environment;
+      for (const statement of statements) {
+        this.execute({ statment: statement });
+      }
+    } finally {
+      this.environment = previous;
+    }
   };
 
   public visitAssignExp = ({ expr }: { expr: Assign }) => {
