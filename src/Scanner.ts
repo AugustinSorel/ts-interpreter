@@ -91,6 +91,9 @@ export class Scanner {
           type: this.match({ expected: "*" }) ? "star_star" : "star",
         });
         break;
+      case "%":
+        this.addToken({ type: "percent" });
+        break;
       case "?":
         this.addToken({ type: "question" });
         break;

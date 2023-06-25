@@ -1,2 +1,2 @@
-var result = 2 ** 3 * 2 ** 2;
+var result = 2 % 3 == 2;
 print result;

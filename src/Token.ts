@@ -14,6 +14,7 @@ export type TokenType =
   | "question"
   | "colon"
   | "star_star"
+  | "percent"
   // one or two character tokens
   | "bang"
   | "bang_equal"

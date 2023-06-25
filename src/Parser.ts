@@ -184,7 +184,7 @@ export class Parser {
   private factor = () => {
     let expr = this.power();
 
-    while (this.match({ types: ["slash", "star"] })) {
+    while (this.match({ types: ["slash", "star", "percent"] })) {
       const operator = this.previous();
       const right = this.power();
       expr = new Binary({ left: expr, operator, right });
