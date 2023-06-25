@@ -1,6 +1,15 @@
-import { Binary, Conditional, Expr, Grouping, Literal, Unary } from "./Expr";
+import {
+  Assign,
+  Binary,
+  Conditional,
+  Expr,
+  Grouping,
+  Literal,
+  Unary,
+  Variable,
+} from "./Expr";
 import { Shell } from "./Shell";
-import { Expression, Print } from "./Stmt";
+import { Expression, Print, Var } from "./Stmt";
 import { Token, TokenType } from "./Token";
 
 export class ParseError extends Error {}
@@ -18,10 +27,43 @@ export class Parser {
     const statements = [];
 
     while (!this.isAtEnd()) {
-      statements.push(this.statment());
+      statements.push(this.declaration());
     }
 
     return statements;
+  };
+
+  private declaration = () => {
+    try {
+      if (this.match({ types: ["var"] })) {
+        return this.varDeclaration();
+      }
+
+      return this.statment();
+    } catch (error) {
+      if (error instanceof ParseError) {
+        this.synchronize();
+        return null;
+      }
+
+      return null;
+    }
+  };
+
+  private varDeclaration = () => {
+    const name = this.consume({
+      type: "identifier",
+      message: "Expect 'identifier' after var. ",
+    });
+
+    let initializer = null;
+    if (this.match({ types: ["equal"] })) {
+      initializer = this.expression();
+    }
+
+    this.consume({ type: "semicolon", message: "Expect ';' after value." });
+
+    return new Var({ name, initializer });
   };
 
   private statment = () => {
@@ -35,10 +77,7 @@ export class Parser {
   private expressionStatment = () => {
     const expr = this.expression();
 
-    this.consume({
-      type: "semicolon",
-      message: "Expect ';' after value.",
-    });
+    this.consume({ type: "semicolon", message: "Expect ';' after value." });
 
     return new Expression({ expression: expr });
   };
@@ -58,8 +97,26 @@ export class Parser {
     return this.conditional();
   };
 
+  private assignment = (): Expr => {
+    const expr = this.equality();
+
+    if (this.match({ types: ["equal"] })) {
+      const equals = this.previous();
+      const value = this.assignment();
+
+      if (expr instanceof Variable) {
+        const name = expr.name;
+        return new Assign({ name, value });
+      }
+
+      this.error({ token: equals, message: "Invalid assignment target." });
+    }
+
+    return expr;
+  };
+
   private conditional = () => {
-    let expr = this.equality();
+    let expr = this.assignment();
 
     if (this.match({ types: ["question"] })) {
       const thenBranch = this.expression();
@@ -193,6 +250,10 @@ export class Parser {
       });
       this.factor();
       return null;
+    }
+
+    if (this.match({ types: ["identifier"] })) {
+      return new Variable({ name: this.previous() });
     }
 
     throw this.error({ token: this.peek(), message: "Expect expression." });

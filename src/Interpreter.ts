@@ -1,3 +1,4 @@
+import { Environment } from "./Environment";
 import {
   Binary,
   Conditional,
@@ -6,15 +7,23 @@ import {
   Literal,
   Unary,
   VisitorExpr,
+  Variable,
+  Assign,
 } from "./Expr";
 import { Shell } from "./Shell";
-import { Expression, Print, Stmt, VisitorStmt } from "./Stmt";
+import { Expression, Print, Stmt, Var, VisitorStmt } from "./Stmt";
 import { Token } from "./Token";
 import type { TokenLiteral } from "./Token";
 
 export class Interpreter
   implements VisitorExpr<TokenLiteral>, VisitorStmt<void>
 {
+  private environment;
+
+  constructor() {
+    this.environment = new Environment();
+  }
+
   public interpret = ({ statments }: { statments: Stmt[] }) => {
     try {
       for (const statment of statments) {
@@ -23,9 +32,9 @@ export class Interpreter
     } catch (error) {
       if (error instanceof RuntimeError) {
         Shell.runtimeError({ error });
+      } else {
+        console.error(`unhandled error ${error}`);
       }
-
-      console.error(`unhandled error ${error}`);
     }
   };
 
@@ -33,9 +42,30 @@ export class Interpreter
     statment.accept({ visitor: this });
   };
 
+  public visitAssignExp = ({ expr }: { expr: Assign }) => {
+    const value = this.evalute({ expr: expr.value });
+    this.environment.assign({ name: expr.name, value });
+    return value;
+  };
+
   public visitExpressionStmt = ({ stmt }: { stmt: Expression }) => {
     this.evalute({ expr: stmt.expression });
     return null;
+  };
+
+  public visitVarStmt = ({ stmt }: { stmt: Var }) => {
+    let value = null;
+
+    if (stmt.initializer !== null) {
+      value = this.evalute({ expr: stmt.initializer });
+    }
+
+    this.environment.define({ name: stmt.name.lexeme, value });
+    return null;
+  };
+
+  public visitVariableExpr = ({ expr }: { expr: Variable }) => {
+    return this.environment.get({ name: expr.name }) ?? null;
   };
 
   public visitPrintStmt = ({ stmt }: { stmt: Print }) => {
@@ -45,12 +75,16 @@ export class Interpreter
   };
 
   public visitUnaryExpr = ({ expr }: { expr: Unary }) => {
-    const right = this.evalute({ expr: expr.right }) ?? 0;
+    const right = this.evalute({ expr: expr.right });
 
     switch (expr.operator.type) {
       case "minus":
-        this.checkNumberOperand({ operator: expr.operator, operand: right });
-        return -right;
+        const num = this.checkNumberOperand({
+          operator: expr.operator,
+          operand: right,
+        });
+
+        return -num;
 
       case "bang":
         return !this.isTruthy({ object: right });
@@ -60,25 +94,42 @@ export class Interpreter
   };
 
   public visitBinaryExpr = ({ expr }: { expr: Binary }) => {
-    const left = this.evalute({ expr: expr.left }) ?? 0;
-    const right = this.evalute({ expr: expr.right }) ?? 0;
+    const left = this.evalute({ expr: expr.left });
+    const right = this.evalute({ expr: expr.right });
 
     switch (expr.operator.type) {
-      case "minus":
-        return +left - +right;
-      case "star":
-        return +left * +right;
-      case "slash":
-        this.checkNumberOperands({ operator: expr.operator, left, right });
+      case "minus": {
+        const nums = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
+        return nums.left - nums.right;
+      }
+      case "star": {
+        const nums = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
+        return nums.left * nums.right;
+      }
+      case "slash": {
+        const nums = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
 
-        if (+right === 0) {
+        if (nums.right === 0) {
           throw new RuntimeError({
             token: expr.operator,
             message: "division by zero",
           });
         }
 
-        return +left / +right;
+        return nums.left / nums.right;
+      }
       case "plus": {
         if (typeof left === "number" && typeof right === "number") {
           return left + right;
@@ -101,25 +152,53 @@ export class Interpreter
           message: `Operands must be two numbers or two strings. But got ${left} ${expr.operator.type} ${right}`,
         });
       }
-      case "greater":
-        this.checkNumberOperands({ operator: expr.operator, left, right });
-        return +left > +right;
-      case "greater_equal":
-        this.checkNumberOperands({ operator: expr.operator, left, right });
-        return +left >= +right;
+      case "greater": {
+        const res = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
+        return res.left > res.right;
+      }
+      case "greater_equal": {
+        const nums = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
+        return nums.left >= nums.right;
+      }
       case "less":
-        this.checkNumberOperands({ operator: expr.operator, left, right });
-        return left < right;
-      case "less_equal":
-        this.checkNumberOperands({ operator: expr.operator, left, right });
-        console.log("here");
-        return +left <= +right;
-      case "bang_equal":
-        this.checkNumberOperands({ operator: expr.operator, left, right });
-        return +left !== +right;
-      case "equal_equal":
-        this.checkNumberOperands({ operator: expr.operator, left, right });
-        return !!(+left === +right);
+        const nums = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
+        return nums.left < nums.right;
+      case "less_equal": {
+        const nums = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
+        return nums.left <= nums.right;
+      }
+      case "bang_equal": {
+        const nums = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
+        return nums.left !== nums.right;
+      }
+      case "equal_equal": {
+        const nums = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
+        return nums.left === nums.right;
+      }
     }
 
     return null;
@@ -155,7 +234,7 @@ export class Interpreter
     operand: TokenLiteral;
   }) => {
     if (typeof props.operand === "number") {
-      return;
+      return props.operand;
     }
 
     throw new RuntimeError({
@@ -170,7 +249,7 @@ export class Interpreter
     right: TokenLiteral;
   }) => {
     if (typeof props.left === "number" && typeof props.right === "number") {
-      return;
+      return { left: props.left, right: props.right };
     }
 
     throw new RuntimeError({

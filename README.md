@@ -3,7 +3,11 @@
 ## Grammar
 
 ```txt
-program        → statement* EOF ;
+program        → declaration* EOF ;
+
+declaration    → varDecl | statement ;
+
+varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 
 statement      → exprStmt | printStmt ;
 
@@ -13,7 +17,9 @@ printStmt      → "print" expression ";" ;
 
 expression     → conditional ;
 
-conditional    → equality ("?" expression ":" conditional)? ;
+conditional    → assignment ("?" expression ":" conditional)? ;
+
+assignment     → IDENTIFIER "=" assignment | equality
 
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 
@@ -32,4 +38,5 @@ primary        → NUMBER | STRING | "true" | "false" | "nil"
                  | ( ">" | ">=" | "<" | "<=" ) comparison
                  | ( "+" ) term
                  | ( "/" | "*" ) factor
+                 | IDENTIFIER
 ```

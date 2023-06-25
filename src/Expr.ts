@@ -6,6 +6,8 @@ export type VisitorExpr<R> = {
   visitLiteralExpr: ({ expr }: { expr: Literal }) => R;
   visitUnaryExpr: ({ expr }: { expr: Unary }) => R;
   visitConditionalExpr: ({ expr }: { expr: Conditional }) => R;
+  visitVariableExpr: ({ expr }: { expr: Variable }) => R;
+  visitAssignExp: ({ expr }: { expr: Assign }) => R;
 };
 
 export abstract class Expr {
@@ -92,5 +94,33 @@ export class Conditional extends Expr {
 
   public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
     return visitor.visitConditionalExpr({ expr: this });
+  };
+}
+
+export class Variable extends Expr {
+  public name: Token;
+
+  constructor({ name }: { name: Token }) {
+    super();
+    this.name = name;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
+    return visitor.visitVariableExpr({ expr: this });
+  };
+}
+
+export class Assign extends Expr {
+  public name: Token;
+  public value: Expr;
+
+  constructor({ name, value }: { name: Token; value: Expr }) {
+    super();
+    this.name = name;
+    this.value = value;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
+    return visitor.visitAssignExp({ expr: this });
   };
 }

@@ -1,7 +1,8 @@
-print "one";
-print true;
-print 2 + 1;
+var x = 10;
+x = 12;
 
-print false ? 1 : 2;
+var z = false ? 2 : 4;
+print z;
 
-print "Hello" + "World";
+
+print true ? x = 8 : x = 6;

@@ -1,3 +1,4 @@
+import { AstPrinter } from "./AstPrinter";
 import { Interpreter, RuntimeError } from "./Interpreter";
 import { Parser } from "./Parser";
 import { Scanner } from "./Scanner";
