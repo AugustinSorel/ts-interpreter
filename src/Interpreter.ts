@@ -177,6 +177,14 @@ export class Interpreter
           message: `Operands must be two numbers or two strings. But got ${left} ${expr.operator.type} ${right}`,
         });
       }
+      case "star_star": {
+        const nums = this.checkNumberOperands({
+          operator: expr.operator,
+          left,
+          right,
+        });
+        return nums.left ** nums.right;
+      }
       case "greater": {
         const res = this.checkNumberOperands({
           operator: expr.operator,

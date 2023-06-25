@@ -12,10 +12,8 @@ const readSource = async () => {
   }
 };
 
-//TODO: run through the code
-//TODO: add make tests
-//TODO: add modulo operator
 //TODO: add power operator
+//TODO: add modulo operator
 const main = async () => {
   const source = await readSource();
 

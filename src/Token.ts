@@ -13,6 +13,7 @@ export type TokenType =
   | "star"
   | "question"
   | "colon"
+  | "star_star"
   // one or two character tokens
   | "bang"
   | "bang_equal"

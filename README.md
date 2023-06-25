@@ -29,7 +29,9 @@ comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 
 term           → factor ( ( "-" | "+" ) factor )* ;
 
-factor         → unary ( ( "/" | "*" ) unary )* ;
+factor         → power ( ( "/" | "*" ) power )* ;
+
+power         → unary ("^" power)* ;
 
 unary          → ( "!" | "-" ) unary | primary ;
 

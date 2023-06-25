@@ -1,16 +1,29 @@
 import type {
+  Assign,
   Binary,
   Conditional,
   Expr,
   Grouping,
   Literal,
   Unary,
+  Variable,
   VisitorExpr,
 } from "./Expr";
 
 export class AstPrinter implements VisitorExpr<string> {
   public print = ({ expr }: { expr: Expr }): string => {
     return expr.accept({ visitor: this });
+  };
+
+  public visitAssignExp = ({ expr }: { expr: Assign }) => {
+    return this.parenthesize({
+      name: expr.name.lexeme,
+      exprs: [expr.value],
+    });
+  };
+
+  public visitVariableExpr = ({ expr }: { expr: Variable }) => {
+    return this.parenthesize({ name: expr.name.lexeme, exprs: [] });
   };
 
   public visitBinaryExpr = ({ expr }: { expr: Binary }) => {

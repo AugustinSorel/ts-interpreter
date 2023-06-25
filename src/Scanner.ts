@@ -87,7 +87,9 @@ export class Scanner {
         this.addToken({ type: "semicolon" });
         break;
       case "*":
-        this.addToken({ type: "star" });
+        this.addToken({
+          type: this.match({ expected: "*" }) ? "star_star" : "star",
+        });
         break;
       case "?":
         this.addToken({ type: "question" });

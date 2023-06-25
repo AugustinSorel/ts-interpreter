@@ -182,11 +182,23 @@ export class Parser {
   };
 
   private factor = () => {
-    let expr = this.unary();
+    let expr = this.power();
 
     while (this.match({ types: ["slash", "star"] })) {
       const operator = this.previous();
-      const right = this.unary();
+      const right = this.power();
+      expr = new Binary({ left: expr, operator, right });
+    }
+
+    return expr;
+  };
+
+  private power = () => {
+    let expr = this.unary();
+
+    while (this.match({ types: ["star_star"] })) {
+      const operator = this.previous();
+      const right = this.power();
       expr = new Binary({ left: expr, operator, right });
     }
 
