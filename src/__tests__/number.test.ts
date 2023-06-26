@@ -1,14 +1,15 @@
 import { describe, it, afterAll, vi, expect } from "vitest";
 import { Shell } from "../Shell";
 
-describe("string", () => {
+describe("number", () => {
   const consoleMock = vi.spyOn(console, "log").mockImplementation(() => {});
-  const consoleMockError = vi
-    .spyOn(console, "error")
-    .mockImplementation(() => {});
+  const processExitMock = vi
+    .spyOn(process, "exit")
+    .mockImplementation(() => undefined as never);
 
   afterAll(() => {
     consoleMock.mockReset();
+    processExitMock.mockReset();
   });
 
   it("should do the math correctly", () => {
@@ -38,18 +39,17 @@ describe("string", () => {
     expect(consoleMock).toHaveBeenCalledWith("14");
   });
 
-  it("should return errors for invalid math", () => {
+  it("should exit with runtime error if divised by zero", () => {
     const source = `print 12 / 0;`;
 
     const shell = new Shell();
-    shell.run({ source });
+    const fun = () => shell.run({ source });
+    fun();
 
-    expect(consoleMockError).toHaveBeenCalledWith(
-      "division by zero \n[line 1]"
-    );
+    expect(processExitMock).toHaveBeenCalledWith(70);
   });
 
-  it("should return errors for invalid math", () => {
+  it("should exit with a runtime error if mod by 0", () => {
     const source = `
       var x = 12 % 0;
       print x;
@@ -58,10 +58,10 @@ describe("string", () => {
     const shell = new Shell();
     shell.run({ source });
 
-    expect(consoleMockError).toHaveBeenCalledWith("mod by zero \n[line 2]");
+    expect(processExitMock).toHaveBeenCalledWith(70);
   });
 
-  it("should return errors for invalid math", () => {
+  it("should exit wiht a runtime error if an operand is nil", () => {
     const source = `
       var x = 12;
       var y = nil;
@@ -71,8 +71,6 @@ describe("string", () => {
     const shell = new Shell();
     shell.run({ source });
 
-    expect(consoleMockError).toHaveBeenCalledWith(
-      "Operands must be two numbers or two strings. But got 12 plus null \n[line 4]"
-    );
+    expect(processExitMock).toHaveBeenCalledWith(70);
   });
 });

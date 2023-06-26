@@ -1,1 +1,1 @@
-var x = t :;
+print 12 / 0;

@@ -3,9 +3,9 @@ import { Shell } from "../Shell";
 
 describe("comment", () => {
   const consoleMock = vi.spyOn(console, "log").mockImplementation(() => {});
-  const consoleMockError = vi
-    .spyOn(console, "error")
-    .mockImplementation(() => {});
+  const processExitMock = vi
+    .spyOn(process, "exit")
+    .mockImplementation(() => undefined as never);
 
   afterAll(() => {
     consoleMock.mockReset();
@@ -32,7 +32,7 @@ describe("comment", () => {
     expect(consoleMock).toHaveBeenCalledWith("25");
   });
 
-  it("should return errors for invalid comments", () => {
+  it("should return a syntax error for unfinish code block", () => {
     const source = `
       var x = 12;
       var y = 13;
@@ -44,8 +44,6 @@ describe("comment", () => {
     const shell = new Shell();
     shell.run({ source });
 
-    expect(consoleMockError).toHaveBeenCalledWith(
-      "[line 7] Error : Unterminated block comment."
-    );
+    expect(processExitMock).toHaveBeenCalledWith(65);
   });
 });

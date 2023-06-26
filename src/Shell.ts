@@ -24,16 +24,16 @@ export class Shell {
     const parser = new Parser({ tokens });
     const statments = parser.parse();
 
-    // if (Shell.hadError) {
-    //   process.exit(65);
-    // }
-    //
-    // if (Shell.hadRuntimeError) {
-    //   process.exit(70);
-    // }
+    if (Shell.hadError) {
+      process.exit(65);
+    }
 
     const interpreter = new Interpreter();
     interpreter.interpret({ statments });
+
+    if (Shell.hadRuntimeError) {
+      process.exit(70);
+    }
   };
 
   public static error = ({ line, message }: Error) => {

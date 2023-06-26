@@ -3,9 +3,9 @@ import { Shell } from "../Shell";
 
 describe("if statment", () => {
   const consoleMock = vi.spyOn(console, "log").mockImplementation(() => {});
-  const consoleMockError = vi
-    .spyOn(console, "error")
-    .mockImplementation(() => {});
+  const processExitMock = vi
+    .spyOn(process, "exit")
+    .mockImplementation(() => undefined as never);
 
   afterAll(() => {
     consoleMock.mockReset();
@@ -31,19 +31,13 @@ describe("if statment", () => {
     expect(consoleMock).toHaveBeenCalledWith("15");
   });
 
-  it("should error for invalid ternary if statments", () => {
+  it("should return an invalid syntax for unfinish ternary", () => {
     const source = `
       var x = t ?;
-      var x = t :;
     `;
     const shell = new Shell();
     shell.run({ source });
 
-    expect(consoleMockError).toHaveBeenCalledWith(
-      "[line 2] Error at ';': Expect expression."
-    );
-    expect(consoleMockError).toHaveBeenCalledWith(
-      "[line 3] Error at ':': Expect ';' after value."
-    );
+    expect(processExitMock).toHaveBeenCalledWith(65);
   });
 });

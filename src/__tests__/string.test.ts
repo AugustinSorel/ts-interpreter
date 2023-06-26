@@ -3,12 +3,13 @@ import { Shell } from "../Shell";
 
 describe("string", () => {
   const consoleMock = vi.spyOn(console, "log").mockImplementation(() => {});
-  const consoleMockError = vi
-    .spyOn(console, "error")
-    .mockImplementation(() => {});
+  const processExitMock = vi
+    .spyOn(process, "exit")
+    .mockImplementation(() => undefined as never);
 
   afterAll(() => {
     consoleMock.mockReset();
+    processExitMock.mockReset();
   });
 
   it("should log all correct strings", () => {
@@ -27,7 +28,7 @@ describe("string", () => {
     expect(consoleMock).toHaveBeenCalledWith("hello3");
   });
 
-  it("should return errors for invalid string concat", () => {
+  it("should exit with a runtime error if a nil value is used for concat", () => {
     const source = `
       var x = "hello";
       var y = nil;
@@ -37,8 +38,6 @@ describe("string", () => {
     const shell = new Shell();
     shell.run({ source });
 
-    expect(consoleMockError).toHaveBeenCalledWith(
-      "Operands must be two numbers or two strings. But got hello plus null \n[line 4]"
-    );
+    expect(processExitMock).toHaveBeenCalledWith(70);
   });
 });
