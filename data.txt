@@ -1,1 +1,5 @@
-print 12 / 0;
+if (12 == 12) {
+    print "this is true";
+  } else {
+      print "this is false";
+    }

@@ -5,11 +5,12 @@ import {
   Expr,
   Grouping,
   Literal,
+  Logical,
   Unary,
   Variable,
 } from "./Expr";
 import { Shell } from "./Shell";
-import { Block, Expression, Print, Stmt, Var } from "./Stmt";
+import { Block, Expression, If, Print, Stmt, Var } from "./Stmt";
 import { Token, TokenType } from "./Token";
 
 export class ParseError extends Error {}
@@ -66,7 +67,7 @@ export class Parser {
     return new Var({ name, initializer });
   };
 
-  private statment = () => {
+  private statment = (): Stmt => {
     if (this.match({ types: ["print"] })) {
       return this.printStatment();
     }
@@ -75,7 +76,31 @@ export class Parser {
       return new Block({ statements: this.block() });
     }
 
+    if (this.match({ types: ["if"] })) {
+      return this.IfStatment();
+    }
+
     return this.expressionStatment();
+  };
+
+  private IfStatment = () => {
+    this.consume({ type: "left_paren", message: "Expect '(' after an 'if'." });
+
+    const condition = this.expression();
+
+    this.consume({
+      type: "right_paren",
+      message: "Expect ')' after if condition.",
+    });
+
+    const thenBranch = this.statment();
+
+    let elseBranch: Stmt | null = null;
+    if (this.match({ types: ["else"] })) {
+      elseBranch = this.statment();
+    }
+
+    return new If({ condition, thenBranch, elseBranch });
   };
 
   private block = () => {
@@ -113,7 +138,7 @@ export class Parser {
   };
 
   private assignment = (): Expr => {
-    const expr = this.equality();
+    const expr = this.or();
 
     if (this.match({ types: ["equal"] })) {
       const equals = this.previous();
@@ -125,6 +150,30 @@ export class Parser {
       }
 
       this.error({ token: equals, message: "Invalid assignment target." });
+    }
+
+    return expr;
+  };
+
+  private or = () => {
+    let expr = this.and();
+
+    while (this.match({ types: ["or"] })) {
+      const operator = this.previous();
+      const right = this.and();
+      expr = new Logical({ left: expr, operator, right });
+    }
+
+    return expr;
+  };
+
+  private and = () => {
+    let expr = this.equality();
+
+    while (this.match({ types: ["and"] })) {
+      const operator = this.previous();
+      const right = this.equality();
+      expr = new Logical({ left: expr, operator, right });
     }
 
     return expr;

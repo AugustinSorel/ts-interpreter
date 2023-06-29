@@ -21,6 +21,19 @@ describe("if statment", () => {
       print x;
       print y;
       print z;
+
+      if (12 == 12) {
+        print "12 is equal to 12";
+      }else {
+        print "12 is not equal to 12";
+      }
+
+  
+      if (true and false) {
+        print "true";
+      }else {
+        print "false";
+      }
     `;
 
     const shell = new Shell();
@@ -29,12 +42,29 @@ describe("if statment", () => {
     expect(consoleMock).toHaveBeenCalledWith("hello");
     expect(consoleMock).toHaveBeenCalledWith("world");
     expect(consoleMock).toHaveBeenCalledWith("15");
+    expect(consoleMock).toHaveBeenCalledWith("12 is equal to 12");
+    expect(consoleMock).toHaveBeenCalledWith("false");
   });
 
   it("should return an invalid syntax for unfinish ternary", () => {
     const source = `
       var x = t ?;
     `;
+    const shell = new Shell();
+    shell.run({ source });
+
+    expect(processExitMock).toHaveBeenCalledWith(65);
+  });
+
+  it("should return an invalid syntaxfor unfinish if statment", () => {
+    const source = `
+      if true and false) {
+        print "true";
+      }else {
+        print "false";
+      }
+    `;
+
     const shell = new Shell();
     shell.run({ source });
 

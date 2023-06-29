@@ -9,9 +9,10 @@ import {
   VisitorExpr,
   Variable,
   Assign,
+  Logical,
 } from "./Expr";
 import { Shell } from "./Shell";
-import { Block, Expression, Print, Stmt, Var, VisitorStmt } from "./Stmt";
+import { Block, Expression, If, Print, Stmt, Var, VisitorStmt } from "./Stmt";
 import { Token } from "./Token";
 import type { TokenLiteral } from "./Token";
 
@@ -40,6 +41,31 @@ export class Interpreter
 
   private execute = ({ statment }: { statment: Stmt }) => {
     statment.accept({ visitor: this });
+  };
+
+  public visitLogicalExpr = ({ expr }: { expr: Logical }) => {
+    const left = this.evalute({ expr: expr.left });
+
+    if (expr.operator.type === "or") {
+      if (this.isTruthy({ object: left })) {
+        return left;
+      }
+    } else {
+      if (!this.isTruthy({ object: left })) {
+        return left;
+      }
+    }
+
+    return this.evalute({ expr: expr.right });
+  };
+
+  public visitIfStmt = ({ stmt }: { stmt: If }) => {
+    if (this.isTruthy({ object: this.evalute({ expr: stmt.condition }) })) {
+      this.execute({ statment: stmt.thenBranch });
+    } else if (stmt.elseBranch !== null) {
+      this.execute({ statment: stmt.elseBranch });
+    }
+    return null;
   };
 
   public visitBlockStmt = ({ stmt }: { stmt: Block }) => {
