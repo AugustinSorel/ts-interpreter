@@ -1,3 +1,4 @@
+import { Stmt } from "./Stmt";
 import type { Token, TokenLiteral } from "./Token";
 
 export type VisitorExpr<R> = {

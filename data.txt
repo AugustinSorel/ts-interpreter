@@ -1,5 +1,5 @@
-if (12 == 12) {
-    print "this is true";
-  } else {
-      print "this is false";
-    }
+var x = 0;
+while (x < 10){
+    print x;
+    x = x + 1;
+}

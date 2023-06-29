@@ -7,6 +7,7 @@ export type VisitorStmt<R> = {
   visitVarStmt: ({ stmt }: { stmt: Var }) => R;
   visitBlockStmt: ({ stmt }: { stmt: Block }) => R;
   visitIfStmt: ({ stmt }: { stmt: If }) => R;
+  visitWhileStmt: ({ stmt }: { stmt: While }) => R;
 };
 
 export abstract class Stmt {
@@ -95,5 +96,20 @@ export class If extends Stmt {
 
   public accept = <R>({ visitor }: { visitor: VisitorStmt<R> }) => {
     return visitor.visitIfStmt({ stmt: this });
+  };
+}
+
+export class While extends Stmt {
+  public condition: Expr;
+  public body: Stmt;
+
+  constructor({ body, condition }: { condition: Expr; body: Stmt }) {
+    super();
+    this.condition = condition;
+    this.body = body;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorStmt<R> }) => {
+    return visitor.visitWhileStmt({ stmt: this });
   };
 }

@@ -10,7 +10,7 @@ import {
   Variable,
 } from "./Expr";
 import { Shell } from "./Shell";
-import { Block, Expression, If, Print, Stmt, Var } from "./Stmt";
+import { Block, Expression, If, Print, Stmt, Var, While } from "./Stmt";
 import { Token, TokenType } from "./Token";
 
 export class ParseError extends Error {}
@@ -80,7 +80,29 @@ export class Parser {
       return this.IfStatment();
     }
 
+    if (this.match({ types: ["while"] })) {
+      return this.whileStatment();
+    }
+
     return this.expressionStatment();
+  };
+
+  private whileStatment = () => {
+    this.consume({
+      type: "left_paren",
+      message: "Expect '(' after an 'while'.",
+    });
+
+    const condition = this.expression();
+
+    this.consume({
+      type: "right_paren",
+      message: "Expect ')' after condition.",
+    });
+
+    const body = this.statment();
+
+    return new While({ body, condition });
   };
 
   private IfStatment = () => {

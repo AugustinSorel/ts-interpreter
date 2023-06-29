@@ -9,7 +9,7 @@ declaration    → varDecl | statement ;
 
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 
-statement      → exprStmt | printStmt | block | ifStmt ;
+statement      → exprStmt | printStmt | block | ifStmt | whileStmt ;
 
 exprStmt       → expression ";" ;
 

@@ -12,7 +12,16 @@ import {
   Logical,
 } from "./Expr";
 import { Shell } from "./Shell";
-import { Block, Expression, If, Print, Stmt, Var, VisitorStmt } from "./Stmt";
+import {
+  Block,
+  Expression,
+  If,
+  Print,
+  Stmt,
+  Var,
+  VisitorStmt,
+  While,
+} from "./Stmt";
 import { Token } from "./Token";
 import type { TokenLiteral } from "./Token";
 
@@ -57,6 +66,13 @@ export class Interpreter
     }
 
     return this.evalute({ expr: expr.right });
+  };
+
+  public visitWhileStmt = ({ stmt }: { stmt: While }) => {
+    while (this.isTruthy({ object: this.evalute({ expr: stmt.condition }) })) {
+      this.execute({ statment: stmt.body });
+    }
+    return null;
   };
 
   public visitIfStmt = ({ stmt }: { stmt: If }) => {
