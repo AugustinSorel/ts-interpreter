@@ -84,7 +84,64 @@ export class Parser {
       return this.whileStatment();
     }
 
+    if (this.match({ types: ["for"] })) {
+      return this.forStatment();
+    }
+
     return this.expressionStatment();
+  };
+
+  private forStatment = () => {
+    this.consume({ type: "left_paren", message: "Expect '(' after 'for'." });
+
+    let initializer;
+    if (this.match({ types: ["semicolon"] })) {
+      initializer = null;
+    } else if (this.match({ types: ["var"] })) {
+      initializer = this.varDeclaration();
+    } else {
+      initializer = this.expressionStatment();
+    }
+
+    let condition = null;
+    if (!this.check({ type: "semicolon" })) {
+      condition = this.expression();
+    }
+
+    this.consume({
+      type: "semicolon",
+      message: "Expect ';' after loop condition.",
+    });
+
+    let increment = null;
+    if (!this.match({ types: ["right_paren"] })) {
+      increment = this.expression();
+    }
+
+    this.consume({
+      type: "right_paren",
+      message: "Expect ')' after for clauses.",
+    });
+
+    let body = this.statment();
+
+    if (increment !== null) {
+      body = new Block({
+        statements: [body, new Expression({ expression: increment })],
+      });
+    }
+
+    if (condition === null) {
+      condition = new Literal({ value: true });
+    }
+
+    body = new While({ body, condition });
+
+    if (initializer !== null) {
+      body = new Block({ statements: [initializer, body] });
+    }
+
+    return body;
   };
 
   private whileStatment = () => {
