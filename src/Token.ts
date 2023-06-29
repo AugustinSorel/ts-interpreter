@@ -1,3 +1,5 @@
+import { Interpreter } from "./Interpreter";
+
 export type TokenType =
   // single-character tokens
   | "left_paren"
@@ -48,7 +50,16 @@ export type TokenType =
   // end of file
   | "eof";
 
-export type TokenLiteral = string | number | boolean | null;
+export type Callable = {
+  call: (props: {
+    interpreter: Interpreter;
+    args: TokenLiteral[];
+  }) => TokenLiteral;
+  arity: () => number;
+  toString: () => string;
+};
+
+export type TokenLiteral = string | number | boolean | Callable | null;
 
 type TokenCtor = {
   type: TokenType;

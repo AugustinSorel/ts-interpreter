@@ -10,11 +10,14 @@ import {
   Variable,
   Assign,
   Logical,
+  Call,
 } from "./Expr";
+import { LoxFunction } from "./LoxFunction";
 import { Shell } from "./Shell";
 import {
   Block,
   Expression,
+  Function,
   If,
   Print,
   Stmt,
@@ -23,15 +26,34 @@ import {
   While,
 } from "./Stmt";
 import { Token } from "./Token";
-import type { TokenLiteral } from "./Token";
+import type { TokenLiteral, Callable } from "./Token";
 
 export class Interpreter
   implements VisitorExpr<TokenLiteral>, VisitorStmt<void>
 {
+  public globals;
   private environment;
 
   constructor() {
-    this.environment = new Environment();
+    this.globals = new Environment();
+    this.environment = this.globals;
+
+    this.globals.define({
+      name: "clock",
+      value: {
+        arity: () => {
+          return 0;
+        },
+
+        call: () => {
+          return Date.now();
+        },
+
+        toString: () => {
+          return "<native fn>";
+        },
+      } satisfies Callable,
+    });
   }
 
   public interpret = ({ statments }: { statments: Stmt[] }) => {
@@ -50,6 +72,36 @@ export class Interpreter
 
   private execute = ({ statment }: { statment: Stmt }) => {
     statment.accept({ visitor: this });
+  };
+
+  public visitFunctionStmt = ({ stmt }: { stmt: Function }) => {
+    const fn = new LoxFunction({ declaration: stmt });
+    this.environment.define({ name: stmt.name.lexeme, value: fn });
+    return null;
+  };
+
+  public visitCallExpr = ({ expr }: { expr: Call }) => {
+    const callee = this.evalute({ expr: expr.callee });
+
+    const args = expr.args.map((arg) => this.evalute({ expr: arg }));
+
+    if (!(callee as Callable).call) {
+      throw new RuntimeError({
+        token: expr.paren,
+        message: "can only call functions and classes",
+      });
+    }
+
+    const func = callee as Callable;
+
+    if (args.length !== func.arity()) {
+      throw new RuntimeError({
+        token: expr.paren,
+        message: `expected ${func.arity} arguments but got ${args.length}`,
+      });
+    }
+
+    return func.call({ interpreter: this, args });
   };
 
   public visitLogicalExpr = ({ expr }: { expr: Logical }) => {

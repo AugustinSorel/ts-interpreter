@@ -5,11 +5,17 @@
 ```txt
 program        → declaration* EOF ;
 
-declaration    → varDecl | statement ;
+declaration    → varDecl | statement | funDecl ;
 
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 
 statement      → exprStmt | printStmt | block | ifStmt | whileStmt | forStmt ;
+
+funDecl        → "fun" function ;
+
+function       → IDENTIFIER "(" parameters? ")" block ;
+
+parameters     → IDENTIFIER ( "," IDENTIFIER )* ;
 
 exprStmt       → expression ";" ;
 
@@ -41,9 +47,13 @@ term           → factor ( ( "-" | "+" ) factor )* ;
 
 factor         → power ( ( "/" | "*" | "%" ) power )* ;
 
-power         → unary ("^" power)* ;
+power          → unary ("^" power)* ;
 
-unary          → ( "!" | "-" ) unary | primary ;
+unary          → ( "!" | "-" ) unary | call ;
+
+call           → primary ( "(" arguments? ")" )* ;
+
+arguments      → expression ("," expression)* ;
 
 primary        → NUMBER | STRING | "true" | "false" | "nil"
                  | "(" expression ")"

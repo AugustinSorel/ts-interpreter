@@ -1,4 +1,3 @@
-import { Stmt } from "./Stmt";
 import type { Token, TokenLiteral } from "./Token";
 
 export type VisitorExpr<R> = {
@@ -10,6 +9,7 @@ export type VisitorExpr<R> = {
   visitVariableExpr: ({ expr }: { expr: Variable }) => R;
   visitAssignExp: ({ expr }: { expr: Assign }) => R;
   visitLogicalExpr: ({ expr }: { expr: Logical }) => R;
+  visitCallExpr: ({ expr }: { expr: Call }) => R;
 };
 
 export abstract class Expr {
@@ -149,5 +149,30 @@ export class Logical extends Expr {
 
   public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
     return visitor.visitLogicalExpr({ expr: this });
+  };
+}
+
+export class Call extends Expr {
+  public callee: Expr;
+  public paren: Token;
+  public args;
+
+  constructor({
+    args,
+    paren,
+    callee,
+  }: {
+    callee: Expr;
+    paren: Token;
+    args: Expr[];
+  }) {
+    super();
+    this.callee = callee;
+    this.paren = paren;
+    this.args = args;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
+    return visitor.visitCallExpr({ expr: this });
   };
 }

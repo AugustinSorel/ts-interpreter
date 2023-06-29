@@ -1,6 +1,7 @@
 import {
   Assign,
   Binary,
+  Call,
   Conditional,
   Expr,
   Grouping,
@@ -10,7 +11,16 @@ import {
   Variable,
 } from "./Expr";
 import { Shell } from "./Shell";
-import { Block, Expression, If, Print, Stmt, Var, While } from "./Stmt";
+import {
+  Block,
+  Expression,
+  Function,
+  If,
+  Print,
+  Stmt,
+  Var,
+  While,
+} from "./Stmt";
 import { Token, TokenType } from "./Token";
 
 export class ParseError extends Error {}
@@ -40,6 +50,10 @@ export class Parser {
         return this.varDeclaration();
       }
 
+      if (this.match({ types: ["fun"] })) {
+        return this.function({ kind: "function" });
+      }
+
       return this.statment();
     } catch (error) {
       if (error instanceof ParseError) {
@@ -49,6 +63,52 @@ export class Parser {
 
       return null;
     }
+  };
+
+  private function = ({ kind }: { kind: string }) => {
+    const name = this.consume({
+      type: "identifier",
+      message: `Expect ${kind} name.`,
+    });
+
+    this.consume({
+      type: "left_paren",
+      message: `Expect '(' after ${kind} name.`,
+    });
+
+    const parameters = [];
+
+    if (!this.check({ type: "right_paren" })) {
+      do {
+        if (parameters.length >= 255) {
+          this.error({
+            token: this.peek(),
+            message: "Can't have more than 255 parameters.",
+          });
+        }
+
+        parameters.push(
+          this.consume({
+            type: "identifier",
+            message: "Expect parameter name.",
+          })
+        );
+      } while (this.match({ types: ["comma"] }));
+    }
+
+    this.consume({
+      type: "right_paren",
+      message: `Expect ')' after parameters.`,
+    });
+
+    this.consume({
+      type: "left_brace",
+      message: `Expect '{' before ${kind} body.`,
+    });
+
+    const body = this.block();
+
+    return new Function({ name, params: parameters, body });
   };
 
   private varDeclaration = () => {
@@ -340,7 +400,44 @@ export class Parser {
       return new Unary({ operator, right });
     }
 
-    return this.primary() as Expr;
+    return this.call();
+  };
+
+  private call = () => {
+    let expr = this.primary() as Expr;
+
+    while (true) {
+      if (this.match({ types: ["left_paren"] })) {
+        expr = this.finishCall({ callee: expr });
+      } else {
+        break;
+      }
+    }
+
+    return expr;
+  };
+
+  private finishCall = ({ callee }: { callee: Expr }) => {
+    const args = [];
+
+    if (!this.check({ type: "right_paren" })) {
+      do {
+        if (args.length >= 255) {
+          this.error({
+            token: this.peek(),
+            message: "Can't have more than 255 arguments",
+          });
+        }
+        args.push(this.expression());
+      } while (this.match({ types: ["comma"] }));
+    }
+
+    const paren = this.consume({
+      type: "right_paren",
+      message: "Expect ')' after arguments.",
+    });
+
+    return new Call({ callee, paren, args });
   };
 
   private primary = () => {

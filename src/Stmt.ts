@@ -8,6 +8,7 @@ export type VisitorStmt<R> = {
   visitBlockStmt: ({ stmt }: { stmt: Block }) => R;
   visitIfStmt: ({ stmt }: { stmt: If }) => R;
   visitWhileStmt: ({ stmt }: { stmt: While }) => R;
+  visitFunctionStmt: ({ stmt }: { stmt: Function }) => R;
 };
 
 export abstract class Stmt {
@@ -111,5 +112,30 @@ export class While extends Stmt {
 
   public accept = <R>({ visitor }: { visitor: VisitorStmt<R> }) => {
     return visitor.visitWhileStmt({ stmt: this });
+  };
+}
+
+export class Function extends Stmt {
+  public name: Token;
+  public params: Token[];
+  public body: Stmt[];
+
+  constructor({
+    name,
+    params,
+    body,
+  }: {
+    name: Token;
+    params: Token[];
+    body: Stmt[];
+  }) {
+    super();
+    this.name = name;
+    this.params = params;
+    this.body = body;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorStmt<R> }) => {
+    return visitor.visitFunctionStmt({ stmt: this });
   };
 }

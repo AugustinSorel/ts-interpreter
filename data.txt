@@ -1,5 +1,11 @@
-      for (var i = 0; i < 3; i = i + 1)
-      {
-          print i;
-      }
+for (var i = 0; i < 3; i = i + 1) {
+  print i;
+}
 
+print clock();
+
+fun sayHi(first, last) {
+  print "Hi, " + first + " " + last + "!";
+}
+
+sayHi("Dear", "Reader");
