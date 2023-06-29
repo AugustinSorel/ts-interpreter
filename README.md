@@ -9,7 +9,7 @@ declaration    → varDecl | statement | funDecl ;
 
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 
-statement      → exprStmt | printStmt | block | ifStmt | whileStmt | forStmt ;
+statement      → exprStmt | printStmt | block | ifStmt | whileStmt | forStmt | returnStmt ;
 
 funDecl        → "fun" function ;
 
@@ -28,6 +28,8 @@ ifStmt         → "if" "(" expression ")" statement ( "else" statement )? ;
 whileStmt      → "while" "(" expression ")" statement ;
 
 forStmt        → "for" "(" ( varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement ;
+
+returnStmt     → "return" expression? ";" ;
 
 expression     → conditional ;
 

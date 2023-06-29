@@ -17,6 +17,7 @@ import {
   Function,
   If,
   Print,
+  Return,
   Stmt,
   Var,
   While,
@@ -148,7 +149,27 @@ export class Parser {
       return this.forStatment();
     }
 
+    if (this.match({ types: ["return"] })) {
+      return this.returnStatment();
+    }
+
     return this.expressionStatment();
+  };
+
+  private returnStatment = () => {
+    const keyword = this.previous();
+    let value = null;
+
+    if (!this.check({ type: "semicolon" })) {
+      value = this.expression();
+    }
+
+    this.consume({
+      type: "semicolon",
+      message: "Expect ';' after return value.",
+    });
+
+    return new Return({ keyword, value });
   };
 
   private forStatment = () => {

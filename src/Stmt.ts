@@ -9,6 +9,7 @@ export type VisitorStmt<R> = {
   visitIfStmt: ({ stmt }: { stmt: If }) => R;
   visitWhileStmt: ({ stmt }: { stmt: While }) => R;
   visitFunctionStmt: ({ stmt }: { stmt: Function }) => R;
+  visitReturnStmt: ({ stmt }: { stmt: Return }) => R;
 };
 
 export abstract class Stmt {
@@ -137,5 +138,20 @@ export class Function extends Stmt {
 
   public accept = <R>({ visitor }: { visitor: VisitorStmt<R> }) => {
     return visitor.visitFunctionStmt({ stmt: this });
+  };
+}
+
+export class Return extends Stmt {
+  public keyword: Token;
+  public value: Expr | null;
+
+  constructor({ keyword, value }: { keyword: Token; value: Expr | null }) {
+    super();
+    this.keyword = keyword;
+    this.value = value;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorStmt<R> }) => {
+    return visitor.visitReturnStmt({ stmt: this });
   };
 }

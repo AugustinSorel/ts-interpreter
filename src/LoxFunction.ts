@@ -1,13 +1,21 @@
 import { Environment } from "./Environment";
-import { Interpreter } from "./Interpreter";
+import { Interpreter, ReturnError } from "./Interpreter";
 import { Function } from "./Stmt";
 import { Callable, TokenLiteral } from "./Token";
 
 export class LoxFunction implements Callable {
   private declaration: Function;
+  private closure: Environment;
 
-  constructor({ declaration }: { declaration: Function }) {
+  constructor({
+    declaration,
+    closure,
+  }: {
+    declaration: Function;
+    closure: Environment;
+  }) {
     this.declaration = declaration;
+    this.closure = closure;
   }
 
   public call = ({
@@ -17,7 +25,7 @@ export class LoxFunction implements Callable {
     interpreter: Interpreter;
     args: TokenLiteral[];
   }) => {
-    const environment = new Environment({ enclosing: interpreter.globals });
+    const environment = new Environment({ enclosing: this.closure });
 
     for (let i = 0; i < this.declaration.params.length; i++) {
       environment.define({
@@ -26,10 +34,16 @@ export class LoxFunction implements Callable {
       });
     }
 
-    interpreter.executeBlock({
-      statements: this.declaration.body,
-      environment,
-    });
+    try {
+      interpreter.executeBlock({
+        statements: this.declaration.body,
+        environment,
+      });
+    } catch (error) {
+      if (error instanceof ReturnError) {
+        return error.value;
+      }
+    }
 
     return null;
   };

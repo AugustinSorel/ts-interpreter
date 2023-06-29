@@ -20,6 +20,7 @@ import {
   Function,
   If,
   Print,
+  Return,
   Stmt,
   Var,
   VisitorStmt,
@@ -75,9 +76,19 @@ export class Interpreter
   };
 
   public visitFunctionStmt = ({ stmt }: { stmt: Function }) => {
-    const fn = new LoxFunction({ declaration: stmt });
+    const fn = new LoxFunction({ declaration: stmt,closure:this.environment });
     this.environment.define({ name: stmt.name.lexeme, value: fn });
     return null;
+  };
+
+  public visitReturnStmt = ({ stmt }: { stmt: Return; }) => {
+    let value = null;
+
+    if (stmt.value !== null) {
+      value = this.evalute({ expr: stmt.value });
+    }
+
+    throw new ReturnError({ value });
   };
 
   public visitCallExpr = ({ expr }: { expr: Call }) => {
@@ -441,5 +452,14 @@ export class RuntimeError extends Error {
   constructor({ token, message }: { token: Token; message: string }) {
     super(message);
     this.token = token;
+  }
+}
+
+export class ReturnError extends Error {
+  public value: TokenLiteral;
+
+  constructor({ value }: { value: TokenLiteral }) {
+    super();
+    this.value = value;
   }
 }
