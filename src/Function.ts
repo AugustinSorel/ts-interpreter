@@ -1,3 +1,4 @@
+import { LoxInstance } from "./Class";
 import { Environment } from "./Environment";
 import { Interpreter, ReturnError } from "./Interpreter";
 import { Function } from "./Stmt";
@@ -57,6 +58,15 @@ export class LoxFunction extends Callable {
     }
 
     return null;
+  };
+
+  public bind = ({ instance }: { instance: LoxInstance }) => {
+    const environment = new Environment({ enclosing: this.closure });
+    environment.define({ name: "this", value: instance });
+    return new LoxFunction({
+      declaration: this.declaration,
+      closure: environment,
+    });
   };
 
   public arity = () => {

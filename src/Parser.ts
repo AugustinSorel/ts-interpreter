@@ -4,15 +4,19 @@ import {
   Call,
   Conditional,
   Expr,
+  Get,
   Grouping,
   Literal,
   Logical,
+  Set,
+  This,
   Unary,
   Variable,
 } from "./Expr";
 import { Shell } from "./Shell";
 import {
   Block,
+  Class,
   Expression,
   Function,
   If,
@@ -55,6 +59,10 @@ export class Parser {
         return this.function({ kind: "function" });
       }
 
+      if (this.match({ types: ["class"] })) {
+        return this.classDeclaration();
+      }
+
       return this.statment();
     } catch (error) {
       if (error instanceof ParseError) {
@@ -64,6 +72,31 @@ export class Parser {
 
       return null;
     }
+  };
+
+  private classDeclaration = () => {
+    const name = this.consume({
+      type: "identifier",
+      message: "Expect class name.",
+    });
+
+    this.consume({
+      type: "left_brace",
+      message: "Expect '{' before class body.",
+    });
+
+    const methods = [];
+
+    while (!this.check({ type: "right_brace" }) && !this.isAtEnd()) {
+      methods.push(this.function({ kind: "method" }));
+    }
+
+    this.consume({
+      type: "right_brace",
+      message: "Expect '}' after class body.",
+    });
+
+    return new Class({ name, methods, superClass: null });
   };
 
   private function = ({ kind }: { kind: string }) => {
@@ -307,11 +340,13 @@ export class Parser {
       if (expr instanceof Variable) {
         const name = expr.name;
         return new Assign({ name, value });
+      } else if (expr instanceof Get) {
+        const get = expr;
+        return new Set({ object: get.object, name: get.name, value });
       }
 
       this.error({ token: equals, message: "Invalid assignment target." });
     }
-
     return expr;
   };
 
@@ -430,6 +465,12 @@ export class Parser {
     while (true) {
       if (this.match({ types: ["left_paren"] })) {
         expr = this.finishCall({ callee: expr });
+      } else if (this.match({ types: ["dot"] })) {
+        const name = this.consume({
+          type: "identifier",
+          message: "Expect property name after '.'.",
+        });
+        expr = new Get({ object: expr, name });
       } else {
         break;
       }
@@ -523,6 +564,10 @@ export class Parser {
       });
       this.factor();
       return null;
+    }
+
+    if (this.match({ types: ["this"] })) {
+      return new This({ keyword: this.previous() });
     }
 
     if (this.match({ types: ["identifier"] })) {

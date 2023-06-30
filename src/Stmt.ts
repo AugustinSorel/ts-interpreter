@@ -1,4 +1,4 @@
-import type { Expr } from "./Expr";
+import type { Expr, Variable } from "./Expr";
 import type { Token } from "./Token";
 
 export type VisitorStmt<R> = {
@@ -10,6 +10,7 @@ export type VisitorStmt<R> = {
   visitWhileStmt: ({ stmt }: { stmt: While }) => R;
   visitFunctionStmt: ({ stmt }: { stmt: Function }) => R;
   visitReturnStmt: ({ stmt }: { stmt: Return }) => R;
+  visitClassStmt: ({ stmt }: { stmt: Class }) => R;
 };
 
 export abstract class Stmt {
@@ -153,5 +154,30 @@ export class Return extends Stmt {
 
   public accept = <R>({ visitor }: { visitor: VisitorStmt<R> }) => {
     return visitor.visitReturnStmt({ stmt: this });
+  };
+}
+
+export class Class extends Stmt {
+  public name: Token;
+  public superClass: Variable | null;
+  public methods: Function[];
+
+  constructor({
+    name,
+    methods,
+    superClass,
+  }: {
+    name: Token;
+    methods: Function[];
+    superClass: Variable | null;
+  }) {
+    super();
+    this.name = name;
+    this.methods = methods;
+    this.superClass = superClass;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorStmt<R> }) => {
+    return visitor.visitClassStmt({ stmt: this });
   };
 }

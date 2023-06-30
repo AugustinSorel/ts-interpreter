@@ -1,7 +1,8 @@
 import { Interpreter } from "./Interpreter";
-import { VisitorExpr } from "./Expr";
+import { Get, Set, This, VisitorExpr } from "./Expr";
 import {
   Block,
+  Class,
   Expression,
   Function,
   If,
@@ -26,13 +27,15 @@ import {
 import { Token } from "./Token";
 import { Shell } from "./Shell";
 
-type FunctionType = "none" | "function";
+type FunctionType = "none" | "function" | "method";
+type ClassType = "none" | "class";
 
 export class Resolver implements VisitorExpr<void>, VisitorStmt<void> {
   private interpreter: Interpreter;
   private scopes: Map<string, boolean>[] = [];
 
   private currentFunctionType: FunctionType = "none";
+  private currentClass: ClassType = "none";
 
   constructor({ interpreter }: { interpreter: Interpreter }) {
     this.interpreter = interpreter;
@@ -224,6 +227,50 @@ export class Resolver implements VisitorExpr<void>, VisitorStmt<void> {
     this.resolveExpression({ expr: expr.expr });
     this.resolveExpression({ expr: expr.thenBranch });
     this.resolveExpression({ expr: expr.elseBranch });
+    return null;
+  };
+
+  public visitClassStmt = ({ stmt }: { stmt: Class }) => {
+    const enclosingClass = this.currentClass;
+    this.currentClass = "class";
+
+    this.declare({ name: stmt.name });
+    this.define({ name: stmt.name });
+
+    this.beginScope();
+    this.scopes[this.scopes.length - 1].set("this", true);
+
+    for (const method of stmt.methods) {
+      const declaration = "method";
+      this.resolveFunction({ func: method, type: declaration });
+    }
+
+    this.endScope();
+    this.currentClass = enclosingClass;
+    return null;
+  };
+
+  public visitGetExpr = ({ expr }: { expr: Get }) => {
+    this.resolveExpression({ expr: expr.object });
+    return null;
+  };
+
+  public visitSetExpr = ({ expr }: { expr: Set }) => {
+    this.resolveExpression({ expr: expr.value });
+    this.resolveExpression({ expr: expr.object });
+    return null;
+  };
+
+  public visitThisExpr = ({ expr }: { expr: This }) => {
+    if (this.currentClass === "none") {
+      Shell.errorAt({
+        token: expr.keyword,
+        message: "Cannot use 'this' outside of a class.",
+      });
+      return null;
+    }
+
+    this.resolveLocal({ expr, name: expr.keyword });
     return null;
   };
 }

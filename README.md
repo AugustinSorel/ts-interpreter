@@ -5,13 +5,15 @@
 ```txt
 program        → declaration* EOF ;
 
-declaration    → varDecl | statement | funDecl ;
+declaration    → varDecl | statement | funDecl | classDecl ;
 
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 
 statement      → exprStmt | printStmt | block | ifStmt | whileStmt | forStmt | returnStmt ;
 
 funDecl        → "fun" function ;
+
+classDecl      → "class" IDENTIFIER "{" function* "}" ;
 
 function       → IDENTIFIER "(" parameters? ")" block ;
 
@@ -35,7 +37,7 @@ expression     → conditional ;
 
 conditional    → assignment ("?" expression ":" conditional)? ;
 
-assignment     → IDENTIFIER "=" assignment | logical_or ;
+assignment     → ( call "." )? IDENTIFIER "=" assignment | logic_or ;
 
 logic_or       → logic_and ( "or" logic_and )* ;
 
@@ -53,7 +55,7 @@ power          → unary ("^" power)* ;
 
 unary          → ( "!" | "-" ) unary | call ;
 
-call           → primary ( "(" arguments? ")" )* ;
+call           → primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
 
 arguments      → expression ("," expression)* ;
 

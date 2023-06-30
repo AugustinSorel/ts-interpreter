@@ -1,3 +1,4 @@
+import { LoxClass, LoxInstance } from "./Class";
 import { Environment } from "./Environment";
 import {
   Binary,
@@ -11,11 +12,15 @@ import {
   Assign,
   Logical,
   Call,
+  Get,
+  Set,
+  This,
 } from "./Expr";
 import { Callable, ClockFunction, LoxFunction } from "./Function";
 import { Shell } from "./Shell";
 import {
   Block,
+  Class,
   Expression,
   Function,
   If,
@@ -86,6 +91,57 @@ export class Interpreter
     }
 
     throw new ReturnError({ value });
+  };
+
+  public visitClassStmt = ({ stmt }: { stmt: Class }) => {
+    this.environment.define({ name: stmt.name.lexeme, value: null });
+
+    const methods = new Map<string, LoxFunction>();
+    for (const method of stmt.methods) {
+      const fn = new LoxFunction({
+        declaration: method,
+        closure: this.environment,
+      });
+      methods.set(method.name.lexeme, fn);
+    }
+
+    const klass = new LoxClass({ name: stmt.name.lexeme, methods: methods });
+    this.environment.assign({ name: stmt.name, value: klass });
+    return null;
+  };
+
+  public visitThisExpr = ({ expr }: { expr: This }) => {
+    return this.lookUpVariable({ name: expr.keyword, expr });
+  };
+
+  public visitGetExpr = ({ expr }: { expr: Get }) => {
+    const object = this.evalute({ expr: expr.object });
+
+    if (object instanceof LoxInstance) {
+      return object.get({ name: expr.name }) ?? null;
+    }
+
+    throw new RuntimeError({
+      token: expr.name,
+      message: "only instances have properties",
+    });
+  };
+
+  public visitSetExpr = ({ expr }: { expr: Set }) => {
+    const object = this.evalute({ expr: expr.object });
+
+    if (!(object instanceof LoxInstance)) {
+      throw new RuntimeError({
+        token: expr.name,
+        message: "only instances have fields",
+      });
+    }
+
+    const value = this.evalute({ expr: expr.value });
+
+    object.set({ name: expr.name, value });
+
+    return value;
   };
 
   public visitCallExpr = ({ expr }: { expr: Call }) => {

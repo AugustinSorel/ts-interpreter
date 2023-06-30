@@ -10,6 +10,9 @@ export type VisitorExpr<R> = {
   visitAssignExpr: ({ expr }: { expr: Assign }) => R;
   visitLogicalExpr: ({ expr }: { expr: Logical }) => R;
   visitCallExpr: ({ expr }: { expr: Call }) => R;
+  visitGetExpr: ({ expr }: { expr: Get }) => R;
+  visitSetExpr: ({ expr }: { expr: Set }) => R;
+  visitThisExpr: ({ expr }: { expr: This }) => R;
 };
 
 export abstract class Expr {
@@ -174,5 +177,58 @@ export class Call extends Expr {
 
   public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
     return visitor.visitCallExpr({ expr: this });
+  };
+}
+
+export class Get extends Expr {
+  public object: Expr;
+  public name: Token;
+
+  constructor({ object, name }: { object: Expr; name: Token }) {
+    super();
+    this.object = object;
+    this.name = name;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
+    return visitor.visitGetExpr({ expr: this });
+  };
+}
+
+export class Set extends Expr {
+  public object: Expr;
+  public name: Token;
+  public value: Expr;
+
+  constructor({
+    object,
+    name,
+    value,
+  }: {
+    object: Expr;
+    name: Token;
+    value: Expr;
+  }) {
+    super();
+    this.object = object;
+    this.name = name;
+    this.value = value;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
+    return visitor.visitSetExpr({ expr: this });
+  };
+}
+
+export class This extends Expr {
+  public keyword: Token;
+
+  constructor({ keyword }: { keyword: Token }) {
+    super();
+    this.keyword = keyword;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
+    return visitor.visitThisExpr({ expr: this });
   };
 }

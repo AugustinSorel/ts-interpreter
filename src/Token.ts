@@ -1,3 +1,4 @@
+import { LoxInstance } from "./Class";
 import { Callable } from "./Function";
 
 export type TokenType =
@@ -50,7 +51,13 @@ export type TokenType =
   // end of file
   | "eof";
 
-export type TokenLiteral = string | number | boolean | Callable | null;
+export type TokenLiteral =
+  | string
+  | number
+  | boolean
+  | Callable
+  | LoxInstance
+  | null;
 
 type TokenCtor = {
   type: TokenType;
