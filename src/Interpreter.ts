@@ -12,7 +12,7 @@ import {
   Logical,
   Call,
 } from "./Expr";
-import { LoxFunction } from "./LoxFunction";
+import { Callable, ClockFunction, LoxFunction } from "./Function";
 import { Shell } from "./Shell";
 import {
   Block,
@@ -27,7 +27,7 @@ import {
   While,
 } from "./Stmt";
 import { Token } from "./Token";
-import type { TokenLiteral, Callable } from "./Token";
+import type { TokenLiteral } from "./Token";
 
 export class Interpreter
   implements VisitorExpr<TokenLiteral>, VisitorStmt<void>
@@ -41,19 +41,7 @@ export class Interpreter
 
     this.globals.define({
       name: "clock",
-      value: {
-        arity: () => {
-          return 0;
-        },
-
-        call: () => {
-          return Date.now();
-        },
-
-        toString: () => {
-          return "<native fn>";
-        },
-      } satisfies Callable,
+      value: new ClockFunction(),
     });
   }
 
@@ -76,12 +64,15 @@ export class Interpreter
   };
 
   public visitFunctionStmt = ({ stmt }: { stmt: Function }) => {
-    const fn = new LoxFunction({ declaration: stmt,closure:this.environment });
+    const fn = new LoxFunction({
+      declaration: stmt,
+      closure: this.environment,
+    });
     this.environment.define({ name: stmt.name.lexeme, value: fn });
     return null;
   };
 
-  public visitReturnStmt = ({ stmt }: { stmt: Return; }) => {
+  public visitReturnStmt = ({ stmt }: { stmt: Return }) => {
     let value = null;
 
     if (stmt.value !== null) {
@@ -96,7 +87,7 @@ export class Interpreter
 
     const args = expr.args.map((arg) => this.evalute({ expr: arg }));
 
-    if (!(callee as Callable).call) {
+    if (!(callee instanceof Callable)) {
       throw new RuntimeError({
         token: expr.paren,
         message: "can only call functions and classes",

@@ -1,4 +1,4 @@
-import { Interpreter } from "./Interpreter";
+import { Callable } from "./Function";
 
 export type TokenType =
   // single-character tokens
@@ -49,15 +49,6 @@ export type TokenType =
   | "while"
   // end of file
   | "eof";
-
-export type Callable = {
-  call: (props: {
-    interpreter: Interpreter;
-    args: TokenLiteral[];
-  }) => TokenLiteral;
-  arity: () => number;
-  toString: () => string;
-};
 
 export type TokenLiteral = string | number | boolean | Callable | null;
 

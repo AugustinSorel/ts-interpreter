@@ -1,9 +1,19 @@
 import { Environment } from "./Environment";
 import { Interpreter, ReturnError } from "./Interpreter";
 import { Function } from "./Stmt";
-import { Callable, TokenLiteral } from "./Token";
+import { TokenLiteral } from "./Token";
 
-export class LoxFunction implements Callable {
+export abstract class Callable {
+  abstract arity(): number;
+  abstract call(props: {
+    interpreter: Interpreter;
+    args: TokenLiteral[];
+  }): TokenLiteral;
+
+  abstract toString(): string;
+}
+
+export class LoxFunction extends Callable {
   private declaration: Function;
   private closure: Environment;
 
@@ -14,6 +24,7 @@ export class LoxFunction implements Callable {
     declaration: Function;
     closure: Environment;
   }) {
+    super();
     this.declaration = declaration;
     this.closure = closure;
   }
@@ -54,5 +65,19 @@ export class LoxFunction implements Callable {
 
   public toString = () => {
     return `<fn ${this.declaration.name.lexeme}>`;
+  };
+}
+
+export class ClockFunction extends Callable {
+  public call = () => {
+    return Date.now() / 1000;
+  };
+
+  public arity = () => {
+    return 0;
+  };
+
+  public toString = () => {
+    return "<native fn>";
   };
 }
