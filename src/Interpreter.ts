@@ -34,10 +34,12 @@ export class Interpreter
 {
   public globals;
   private environment;
+  private locals;
 
   constructor() {
     this.globals = new Environment();
     this.environment = this.globals;
+    this.locals = new Map();
 
     this.globals.define({
       name: "clock",
@@ -61,6 +63,10 @@ export class Interpreter
 
   private execute = ({ statment }: { statment: Stmt }) => {
     statment.accept({ visitor: this });
+  };
+
+  public resolve = ({ expr, depth }: { expr: Expr; depth: number }) => {
+    this.locals.set(expr, depth);
   };
 
   public visitFunctionStmt = ({ stmt }: { stmt: Function }) => {
@@ -163,7 +169,7 @@ export class Interpreter
     }
   };
 
-  public visitAssignExp = ({ expr }: { expr: Assign }) => {
+  public visitAssignExpr = ({ expr }: { expr: Assign }) => {
     const value = this.evalute({ expr: expr.value });
     this.environment.assign({ name: expr.name, value });
     return value;
@@ -186,7 +192,16 @@ export class Interpreter
   };
 
   public visitVariableExpr = ({ expr }: { expr: Variable }) => {
-    return this.environment.get({ name: expr.name });
+    return this.lookUpVariable({ name: expr.name, expr });
+  };
+
+  private lookUpVariable = ({ name, expr }: { name: Token; expr: Expr }) => {
+    const distance = this.locals.get(expr);
+    if (distance !== undefined) {
+      return this.environment.getAt({ distance, name: name.lexeme });
+    } else {
+      return this.globals.get({ name });
+    }
   };
 
   public visitPrintStmt = ({ stmt }: { stmt: Print }) => {

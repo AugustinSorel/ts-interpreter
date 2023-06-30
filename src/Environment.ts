@@ -45,4 +45,16 @@ export class Environment {
       message: `Undefined variable '${name.lexeme}'.`,
     });
   };
+
+  public ancestor = ({ distance }: { distance: number }) => {
+    let environment: Environment = this;
+    for (let i = 0; i < distance; i++) {
+      environment = environment.enclosing ?? environment;
+    }
+    return environment;
+  };
+
+  public getAt = ({ distance, name }: { distance: number; name: string }) => {
+    return this.ancestor({ distance }).values.get(name) ?? null;
+  };
 }

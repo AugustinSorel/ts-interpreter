@@ -2,6 +2,7 @@ import { Interpreter, RuntimeError } from "./Interpreter";
 import { Parser } from "./Parser";
 import { Scanner } from "./Scanner";
 import { Token } from "./Token";
+import { Resolver } from "./Resolver";
 
 type Error = {
   line: number;
@@ -22,14 +23,22 @@ export class Shell {
     const tokens = scanner.scanTokens();
 
     const parser = new Parser({ tokens });
-    const statments = parser.parse();
+    const statements = parser.parse();
 
     if (Shell.hadError) {
       process.exit(65);
     }
 
     const interpreter = new Interpreter();
-    interpreter.interpret({ statments });
+
+    const resolver = new Resolver({ interpreter });
+    resolver.resolveStatements({ statements });
+
+    if (Shell.hadError) {
+      process.exit(65);
+    }
+
+    interpreter.interpret({ statments: statements });
 
     if (Shell.hadRuntimeError) {
       process.exit(70);

@@ -7,7 +7,7 @@ export type VisitorExpr<R> = {
   visitUnaryExpr: ({ expr }: { expr: Unary }) => R;
   visitConditionalExpr: ({ expr }: { expr: Conditional }) => R;
   visitVariableExpr: ({ expr }: { expr: Variable }) => R;
-  visitAssignExp: ({ expr }: { expr: Assign }) => R;
+  visitAssignExpr: ({ expr }: { expr: Assign }) => R;
   visitLogicalExpr: ({ expr }: { expr: Logical }) => R;
   visitCallExpr: ({ expr }: { expr: Call }) => R;
 };
@@ -123,7 +123,7 @@ export class Assign extends Expr {
   }
 
   public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
-    return visitor.visitAssignExp({ expr: this });
+    return visitor.visitAssignExpr({ expr: this });
   };
 }
 
