@@ -17,17 +17,21 @@ export abstract class Callable {
 export class LoxFunction extends Callable {
   private declaration: Function;
   private closure: Environment;
+  private isInitializer;
 
   constructor({
     declaration,
     closure,
+    isInitializer,
   }: {
     declaration: Function;
     closure: Environment;
+    isInitializer: boolean;
   }) {
     super();
     this.declaration = declaration;
     this.closure = closure;
+    this.isInitializer = isInitializer;
   }
 
   public call = ({
@@ -52,9 +56,17 @@ export class LoxFunction extends Callable {
         environment,
       });
     } catch (error) {
+      if (this.isInitializer) {
+        return this.closure.getAt({ distance: 0, name: "this" });
+      }
+
       if (error instanceof ReturnError) {
         return error.value;
       }
+    }
+
+    if (this.isInitializer) {
+      return this.closure.getAt({ distance: 0, name: "this" });
     }
 
     return null;
@@ -66,6 +78,7 @@ export class LoxFunction extends Callable {
     return new LoxFunction({
       declaration: this.declaration,
       closure: environment,
+      isInitializer: this.isInitializer,
     });
   };
 

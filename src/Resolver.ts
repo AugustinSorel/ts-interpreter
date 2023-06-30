@@ -27,7 +27,7 @@ import {
 import { Token } from "./Token";
 import { Shell } from "./Shell";
 
-type FunctionType = "none" | "function" | "method";
+type FunctionType = "none" | "function" | "method" | "initializer";
 type ClassType = "none" | "class";
 
 export class Resolver implements VisitorExpr<void>, VisitorStmt<void> {
@@ -178,6 +178,13 @@ export class Resolver implements VisitorExpr<void>, VisitorStmt<void> {
     }
 
     if (stmt.value !== null) {
+      if (this.currentFunctionType === "initializer") {
+        Shell.errorAt({
+          token: stmt.keyword,
+          message: "Cannot return a value from an initializer.",
+        });
+      }
+
       this.resolveExpression({ expr: stmt.value });
     }
     return null;
@@ -241,7 +248,12 @@ export class Resolver implements VisitorExpr<void>, VisitorStmt<void> {
     this.scopes[this.scopes.length - 1].set("this", true);
 
     for (const method of stmt.methods) {
-      const declaration = "method";
+      let declaration: FunctionType = "method";
+
+      if (method.name.lexeme === "init") {
+        declaration = "initializer";
+      }
+
       this.resolveFunction({ func: method, type: declaration });
     }
 

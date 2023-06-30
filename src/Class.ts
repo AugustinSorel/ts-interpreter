@@ -24,6 +24,13 @@ export class LoxClass extends Callable {
 
   public call = (props: { interpreter: Interpreter; args: TokenLiteral[] }) => {
     const instance = new LoxInstance({ klass: this });
+
+    const initializer = this.findMethods({ name: "init" });
+
+    if (initializer !== null) {
+      initializer.bind({ instance }).call(props);
+    }
+
     return instance;
   };
 
@@ -36,7 +43,13 @@ export class LoxClass extends Callable {
   };
 
   public arity = () => {
-    return 0;
+    const initializer = this.findMethods({ name: "init" });
+
+    if (initializer === null) {
+      return 0;
+    }
+
+    return initializer.arity();
   };
 }
 

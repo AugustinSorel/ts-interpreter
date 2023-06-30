@@ -78,6 +78,7 @@ export class Interpreter
     const fn = new LoxFunction({
       declaration: stmt,
       closure: this.environment,
+      isInitializer: false,
     });
     this.environment.define({ name: stmt.name.lexeme, value: fn });
     return null;
@@ -101,6 +102,7 @@ export class Interpreter
       const fn = new LoxFunction({
         declaration: method,
         closure: this.environment,
+        isInitializer: method.name.lexeme === "init",
       });
       methods.set(method.name.lexeme, fn);
     }
