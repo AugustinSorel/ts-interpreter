@@ -13,7 +13,7 @@ statement      → exprStmt | printStmt | block | ifStmt | whileStmt | forStmt |
 
 funDecl        → "fun" function ;
 
-classDecl      → "class" IDENTIFIER "{" function* "}" ;
+classDecl      → "class" IDENTIFIER ( "<" IDENTIFIER )? "{" function* "}" ;
 
 function       → IDENTIFIER "(" parameters? ")" block ;
 
@@ -67,4 +67,5 @@ primary        → NUMBER | STRING | "true" | "false" | "nil"
                  | ( "+" ) term
                  | ( "/" | "*" ) factor
                  | IDENTIFIER
+                 | "super" "." IDENTIFIER ;
 ```

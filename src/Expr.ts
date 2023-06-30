@@ -13,6 +13,7 @@ export type VisitorExpr<R> = {
   visitGetExpr: ({ expr }: { expr: Get }) => R;
   visitSetExpr: ({ expr }: { expr: Set }) => R;
   visitThisExpr: ({ expr }: { expr: This }) => R;
+  visitSuperExpr: ({ expr }: { expr: Super }) => R;
 };
 
 export abstract class Expr {
@@ -230,5 +231,20 @@ export class This extends Expr {
 
   public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
     return visitor.visitThisExpr({ expr: this });
+  };
+}
+
+export class Super extends Expr {
+  public keyword: Token;
+  public method: Token;
+
+  constructor({ keyword, method }: { keyword: Token; method: Token }) {
+    super();
+    this.keyword = keyword;
+    this.method = method;
+  }
+
+  public accept = <R>({ visitor }: { visitor: VisitorExpr<R> }) => {
+    return visitor.visitSuperExpr({ expr: this });
   };
 }

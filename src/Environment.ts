@@ -3,7 +3,7 @@ import type { Token, TokenLiteral } from "./Token";
 
 export class Environment {
   private values;
-  private enclosing: Environment | null;
+  public enclosing: Environment | null;
 
   constructor(props?: { enclosing: Environment }) {
     this.values = new Map<string, TokenLiteral>();

@@ -15,6 +15,7 @@ import {
   Get,
   Set,
   This,
+  Super,
 } from "./Expr";
 import { Callable, ClockFunction, LoxFunction } from "./Function";
 import { Shell } from "./Shell";
@@ -95,7 +96,23 @@ export class Interpreter
   };
 
   public visitClassStmt = ({ stmt }: { stmt: Class }) => {
+    let superClass = null;
+    if (stmt.superClass !== null) {
+      superClass = this.evalute({ expr: stmt.superClass });
+      if (!(superClass instanceof LoxClass)) {
+        throw new RuntimeError({
+          token: stmt.superClass.name,
+          message: "Superclass must be a class",
+        });
+      }
+    }
+
     this.environment.define({ name: stmt.name.lexeme, value: null });
+
+    if (stmt.superClass !== null) {
+      this.environment = new Environment({ enclosing: this.environment });
+      this.environment.define({ name: "super", value: superClass });
+    }
 
     const methods = new Map<string, LoxFunction>();
     for (const method of stmt.methods) {
@@ -107,9 +124,41 @@ export class Interpreter
       methods.set(method.name.lexeme, fn);
     }
 
-    const klass = new LoxClass({ name: stmt.name.lexeme, methods: methods });
+    const klass = new LoxClass({
+      name: stmt.name.lexeme,
+      methods: methods,
+      superClass,
+    });
+
+    if (superClass !== null) {
+      this.environment = this.environment.enclosing as Environment;
+    }
+
     this.environment.assign({ name: stmt.name, value: klass });
     return null;
+  };
+
+  public visitSuperExpr = ({ expr }: { expr: Super }) => {
+    const distance = this.locals.get(expr);
+    const superClass = this.environment.getAt({
+      distance,
+      name: "super",
+    }) as LoxClass;
+    const object = this.environment.getAt({
+      distance: distance - 1,
+      name: "this",
+    }) as LoxInstance;
+
+    const method = superClass.findMethods({ name: expr.method.lexeme });
+
+    if (method === null) {
+      throw new RuntimeError({
+        token: expr.method,
+        message: `Undefined property '${expr.method.lexeme}'`,
+      });
+    }
+
+    return method.bind({ instance: object });
   };
 
   public visitThisExpr = ({ expr }: { expr: This }) => {

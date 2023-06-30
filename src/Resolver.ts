@@ -1,5 +1,5 @@
 import { Interpreter } from "./Interpreter";
-import { Get, Set, This, VisitorExpr } from "./Expr";
+import { Get, Set, Super, This, VisitorExpr } from "./Expr";
 import {
   Block,
   Class,
@@ -28,7 +28,7 @@ import { Token } from "./Token";
 import { Shell } from "./Shell";
 
 type FunctionType = "none" | "function" | "method" | "initializer";
-type ClassType = "none" | "class";
+type ClassType = "none" | "class" | "subClass";
 
 export class Resolver implements VisitorExpr<void>, VisitorStmt<void> {
   private interpreter: Interpreter;
@@ -244,6 +244,26 @@ export class Resolver implements VisitorExpr<void>, VisitorStmt<void> {
     this.declare({ name: stmt.name });
     this.define({ name: stmt.name });
 
+    if (
+      stmt.superClass !== null &&
+      stmt.name.lexeme === stmt.superClass.name.lexeme
+    ) {
+      Shell.errorAt({
+        token: stmt.superClass.name,
+        message: "A class cannot inherit from itself.",
+      });
+    }
+
+    if (stmt.superClass !== null) {
+      this.currentClass = "subClass";
+      this.resolveExpression({ expr: stmt.superClass });
+    }
+
+    if (stmt.superClass !== null) {
+      this.beginScope();
+      this.scopes[this.scopes.length - 1].set("super", true);
+    }
+
     this.beginScope();
     this.scopes[this.scopes.length - 1].set("this", true);
 
@@ -258,6 +278,11 @@ export class Resolver implements VisitorExpr<void>, VisitorStmt<void> {
     }
 
     this.endScope();
+
+    if (stmt.superClass !== null) {
+      this.endScope();
+    }
+
     this.currentClass = enclosingClass;
     return null;
   };
@@ -280,6 +305,23 @@ export class Resolver implements VisitorExpr<void>, VisitorStmt<void> {
         message: "Cannot use 'this' outside of a class.",
       });
       return null;
+    }
+
+    this.resolveLocal({ expr, name: expr.keyword });
+    return null;
+  };
+
+  public visitSuperExpr = ({ expr }: { expr: Super }) => {
+    if (this.currentClass === "none") {
+      Shell.errorAt({
+        token: expr.keyword,
+        message: "Cannot use 'super' outside of a class.",
+      });
+    } else if (this.currentClass !== "subClass") {
+      Shell.errorAt({
+        token: expr.keyword,
+        message: "Cannot use 'super' in a class with no superclass.",
+      });
     }
 
     this.resolveLocal({ expr, name: expr.keyword });

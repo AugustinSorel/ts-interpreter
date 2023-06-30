@@ -9,6 +9,7 @@ import {
   Literal,
   Logical,
   Set,
+  Super,
   This,
   Unary,
   Variable,
@@ -80,6 +81,16 @@ export class Parser {
       message: "Expect class name.",
     });
 
+    let superClass = null;
+    if (this.match({ types: ["less"] })) {
+      this.consume({
+        type: "identifier",
+        message: "Expect superclass name.",
+      });
+
+      superClass = new Variable({ name: this.previous() });
+    }
+
     this.consume({
       type: "left_brace",
       message: "Expect '{' before class body.",
@@ -96,7 +107,7 @@ export class Parser {
       message: "Expect '}' after class body.",
     });
 
-    return new Class({ name, methods, superClass: null });
+    return new Class({ name, methods, superClass });
   };
 
   private function = ({ kind }: { kind: string }) => {
@@ -568,6 +579,19 @@ export class Parser {
 
     if (this.match({ types: ["this"] })) {
       return new This({ keyword: this.previous() });
+    }
+
+    if (this.match({ types: ["super"] })) {
+      const keyword = this.previous();
+      this.consume({
+        type: "dot",
+        message: "Expect '.' after 'super'.",
+      });
+      const method = this.consume({
+        type: "identifier",
+        message: "Expect superclass method name.",
+      });
+      return new Super({ keyword, method });
     }
 
     if (this.match({ types: ["identifier"] })) {

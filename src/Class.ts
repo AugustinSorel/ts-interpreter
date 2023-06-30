@@ -4,18 +4,22 @@ import { Token, TokenLiteral } from "./Token";
 
 export class LoxClass extends Callable {
   public name: string;
+  public superClass: LoxClass | null;
   private methods: Map<string, LoxFunction> = new Map();
 
   constructor({
     name,
     methods,
+    superClass,
   }: {
     name: string;
     methods: Map<string, LoxFunction>;
+    superClass: LoxClass | null;
   }) {
     super();
     this.name = name;
     this.methods = methods;
+    this.superClass = superClass;
   }
 
   public toString = () => {
@@ -34,9 +38,13 @@ export class LoxClass extends Callable {
     return instance;
   };
 
-  public findMethods = ({ name }: { name: string }) => {
+  public findMethods = ({ name }: { name: string }): LoxFunction | null => {
     if (this.methods.has(name)) {
       return this.methods.get(name) ?? null;
+    }
+
+    if (this.superClass !== null) {
+      return this.superClass.findMethods({ name });
     }
 
     return null;
