@@ -7,8 +7,8 @@ export const Header = () => {
   const path = usePathname();
 
   return (
-    <header className="p-5">
-      <nav className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 font-semibold capitalize sm:flex-row">
+    <header className="sticky top-0 z-20 flex min-h-[6rem] p-5 backdrop-blur-md">
+      <nav className="m-auto flex w-full max-w-7xl flex-col items-center justify-between gap-5 font-semibold capitalize sm:flex-row">
         <Link href="/">
           <h1 className=" text-xl">typescript interpreter</h1>
         </Link>

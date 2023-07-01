@@ -1,4 +1,3 @@
-import Link from "next/link";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Header } from "./header";
@@ -17,8 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-zinc-950 text-zinc-200`}>
-        <Header/>
+      <body
+        className={`${inter.className} overflow-x-hidden bg-zinc-950 text-zinc-200`}
+      >
+        <Header />
         {children}
       </body>
     </html>
