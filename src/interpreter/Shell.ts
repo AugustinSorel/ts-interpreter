@@ -12,10 +12,12 @@ type Error = {
 export class Shell {
   private static hadError: boolean;
   private static hadRuntimeError: boolean;
+  public static output: (props: { value: string }) => void;
 
-  constructor() {
+  constructor({ output }: { output: (props: { value: string }) => void }) {
     Shell.hadError = false;
     Shell.hadRuntimeError = false;
+    Shell.output = output;
   }
 
   public run = ({ source }: { source: string }) => {
@@ -26,7 +28,7 @@ export class Shell {
     const statements = parser.parse();
 
     if (Shell.hadError) {
-      process.exit(65);
+      return;
     }
 
     const interpreter = new Interpreter();
@@ -35,13 +37,13 @@ export class Shell {
     resolver.resolveStatements({ statements });
 
     if (Shell.hadError) {
-      process.exit(65);
+      return;
     }
 
-    interpreter.interpret({ statments: statements });
+    interpreter.interpret({ statements });
 
     if (Shell.hadRuntimeError) {
-      process.exit(70);
+      return;
     }
   };
 
@@ -66,14 +68,14 @@ export class Shell {
   };
 
   public static runtimeError = ({ error }: { error: RuntimeError }) => {
-    console.error(`${error.message} \n[line ${error.token.line}]`);
+    Shell.output({ value: `${error.message} \n[line ${error.token.line}]` });
     Shell.hadRuntimeError = true;
   };
 
   private static report = (props: Error & { where: string }) => {
-    console.error(
-      `[line ${props.line}] Error ${props.where}: ${props.message}`
-    );
+    Shell.ouput({
+      value: `[line ${props.line}] Error ${props.where}: ${props.message}`,
+    });
     this.hadError = true;
   };
 }

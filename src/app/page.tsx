@@ -24,37 +24,73 @@ export default function Home() {
         </div>
 
         <CodeBlock>
-          <span className="text-orange-600">fun </span>
-          <span className="text-purple-400">fib</span>
-          <span>{"(n) {"}</span>
+          <span className="text-blue-500">fun </span>
+          <span className="text-yellow-200">fib</span>
+          <span className="text-yellow-500">(</span>
+          <span className="text-yellow-200">n</span>
+          <span className="text-yellow-500">) </span>
+          <span className="text-yellow-500">{"{"}</span>
           <br />
-          <span className="ml-2 text-orange-600">if </span>
-          <span>{"(n <= 1) {"}</span>
+          <span className="text-blue-500">&nbsp;&nbsp;if </span>
+          <span className="text-pink-500">(</span>
+          <span className="text-yellow-200">n</span>
+          <span> {"<="} </span>
+          <span className="text-yellow-200">1</span>
+          <span className="text-pink-500">) </span>
+          <span className="text-pink-500">{"{"}</span>
           <br />
-          <span className="ml-4 text-orange-600">return </span>
-          <span>n;</span>
+          <span className="text-blue-500">&nbsp;&nbsp;&nbsp;&nbsp;return </span>
+          <span className="text-yellow-200">n</span>
+          <span>;</span>
           <br />
-          <span className="ml-2">{"}"}</span>
+          <span className="text-pink-500">&nbsp;&nbsp;{"}"}</span>
           <br />
-          <span className="ml-2 text-orange-600">return </span>
-          <span className="text-purple-400">fib</span>
-          <span>(n - 2) + </span>
-          <span className="text-purple-400">fib</span>
-          <span>(n - 1);</span>
+          <span className="text-blue-500">&nbsp;&nbsp;return </span>
+          <span className="text-yellow-200">fib</span>
+          <span className="text-pink-500">(</span>
+          <span className="text-yellow-200">n</span>
+          <span> - </span>
+          <span className="text-yellow-200">2</span>
+          <span className="text-pink-500">)</span>
+          <span> + </span>
+          <span className="text-yellow-200">fib</span>
+          <span className="text-pink-500">(</span>
+          <span className="text-yellow-200">n</span>
+          <span> - </span>
+          <span className="text-yellow-200">1</span>
+          <span className="text-pink-500">)</span>
+          <span>;</span>
           <br />
-          <span>{"}"}</span>
+          <span className="text-yellow-500">{"}"}</span>
           <br />
           <br />
-          <span className="text-orange-600">for </span>
-          <span>(</span>
-          <span className="text-orange-600">var </span>
-          <span>{"i = 0; i < 20; i = i + 1) {"}</span>
+          <span className="text-blue-500">for </span>
+          <span className="text-yellow-500">(</span>
+          <span className="text-blue-500">var </span>
+          <span className="text-yellow-200">i</span>
+          <span> = </span>
+          <span className="text-yellow-200">0</span>
+          <span>; </span>
+          <span className="text-yellow-200">i</span>
+          <span> {"<"} </span>
+          <span className="text-yellow-200">20</span>
+          <span>; </span>
+          <span className="text-yellow-200">i</span>
+          <span> = </span>
+          <span className="text-yellow-200">i</span>
+          <span> + </span>
+          <span className="text-yellow-200">1</span>
+          <span className="text-yellow-500">) </span>
+          <span className="text-yellow-500">{"{"}</span>
           <br />
-          <span className="ml-2 text-purple-400">print </span>
-          <span className="text-purple-400">fib</span>
-          <span>(n)</span>
+          <span className="text-blue-500">&nbsp;&nbsp;print </span>
+          <span className="text-yellow-200">fib</span>
+          <span className="text-pink-500">(</span>
+          <span className="text-yellow-200">i</span>
+          <span className="text-pink-500">)</span>
+          <span>;</span>
           <br />
-          <span>{"}"}</span>
+          <span className="text-yellow-500">{"}"}</span>
         </CodeBlock>
 
         <hr className="absolute bottom-0 left-0 z-10 h-24 w-full translate-y-1/2 rotate-1 scale-x-125 border-none bg-zinc-950" />
@@ -73,40 +109,40 @@ export default function Home() {
         </div>
 
         <CodeBlock>
-          <span className="text-orange-600">class </span>
-          <span className="text-yellow-600">Doughnut</span>
-          <span>{`{`}</span>
+          <span className="text-blue-500">class </span>
+          <span className="text-yellow-200">Doughnut </span>
+          <span className="text-yellow-500">{`{`}</span>
           <br />
-          <span className="ml-2 text-purple-400">cook</span>
-          <span>(</span>
-          <span>)</span>
-          <span>{"{"}</span>
+          <span className="text-yellow-200">&nbsp;&nbsp;cook</span>
+          <span className="text-pink-500">(</span>
+          <span className="text-pink-500">) </span>
+          <span className="text-pink-500">{"{"}</span>
           <br />
-          <span className="ml-4 text-purple-400">print </span>
-          <span className="text-blue-200">
+          <span className="text-blue-500">&nbsp;&nbsp;&nbsp;&nbsp;print </span>
+          <span className="text-emerald-500">
             &quot;Fry until golden brown.&quot;
           </span>
           <span>;</span>
           <br />
-          <span className="ml-2">{"}"}</span>
+          <span className="text-pink-500">&nbsp;&nbsp;{"}"}</span>
           <br />
-          <span>{"}"}</span>
-          <br />
-          <br />
-          <span className="text-orange-600">class </span>
-          <span className="text-yellow-600">BostonCream</span> <span>&lt;</span>{" "}
-          <span className="text-yellow-600">Doughnut</span>
-          <span>{"{"}</span>
-          <span>{"}"}</span>
+          <span className="text-yellow-500">{"}"}</span>
           <br />
           <br />
-          <span className="text-yellow-600">BostonCream</span>
-          <span>(</span>
-          <span>)</span>
+          <span className="text-blue-500">class </span>
+          <span className="text-yellow-200">BostonCream</span> <span>&lt;</span>{" "}
+          <span className="text-yellow-200">Doughnut</span>
+          <span className="text-yellow-500">{"{"}</span>
+          <span className="text-yellow-500">{"}"}</span>
+          <br />
+          <br />
+          <span className="text-yellow-200">BostonCream</span>
+          <span className="text-yellow-500">(</span>
+          <span className="text-yellow-500">)</span>
           <span>.</span>
-          <span className="text-purple-400">cook</span>
-          <span>(</span>
-          <span>)</span>
+          <span className="text-yellow-200">cook</span>
+          <span className="text-yellow-500">(</span>
+          <span className="text-yellow-500">)</span>
           <span>;</span>
         </CodeBlock>
       </section>
@@ -125,37 +161,42 @@ export default function Home() {
         </div>
 
         <CodeBlock>
-          <span className="text-orange-600">fun </span>
-          <span className="text-purple-400">makeFunction</span>
-          <span>{"() {"}</span>
+          <span className="text-blue-500">fun </span>
+          <span className="text-yellow-200">makeFunction</span>
+          <span className="text-yellow-500">{"() {"}</span>
           <br />
-          <span className="ml-2 text-orange-600">var </span>
-          <span>name = </span>
-          <span className="text-blue-200">&quot;John&quot;</span>
+          <span className="text-blue-500">&nbsp;&nbsp;var </span>
+          <span className="text-yellow-200">name</span>
+          <span> = </span>
+          <span className="text-emerald-500">&quot;John&quot;</span>
           <span>;</span>
           <br />
-          <span className="ml-2 text-orange-600">fun </span>
-          <span className="text-purple-400">displayName</span>
-          <span>{"() {"}</span>
+          <span className="text-blue-500">&nbsp;&nbsp;fun </span>
+          <span className="text-yellow-200">displayName</span>
+          <span className="text-pink-500">{"() {"}</span>
           <br />
-          <span className="ml-4 text-purple-400">print </span>
-          <span>name;</span>
-          <br />
-          <span className="ml-2">{"}"}</span>
-          <br />
-          <span className="ml-2 text-orange-600">return </span>
-          <span className="text-purple-400">displayName</span>
+          <span className="text-blue-500">&nbsp;&nbsp;&nbsp;&nbsp;print </span>
+          <span className="text-yellow-200">name</span>
           <span>;</span>
           <br />
-          <span>{"}"}</span>
+          <span className="text-pink-500">&nbsp;&nbsp;{"}"}</span>
           <br />
-          <span className="text-orange-600">var </span>
-          <span>myFunc = </span>
-          <span className="text-purple-400">makeFunction</span>
-          <span>();</span>
+          <span className="text-blue-500">&nbsp;&nbsp;return </span>
+          <span className="text-yellow-200">displayName</span>
+          <span>;</span>
           <br />
-          <span className="text-purple-400">myFunc</span>
-          <span>();</span>
+          <span className="text-yellow-500">{"}"}</span>
+          <br />
+          <span className="text-blue-500">var </span>
+          <span className="text-yellow-200">myFunc</span>
+          <span> = </span>
+          <span className="text-yellow-200">makeFunction</span>
+          <span className="text-yellow-500">()</span>
+          <span>;</span>
+          <br />
+          <span className="text-yellow-200">myFunc</span>
+          <span className="text-yellow-500">()</span>
+          <span>;</span>
         </CodeBlock>
       </section>
 
