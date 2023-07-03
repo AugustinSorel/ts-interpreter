@@ -53,9 +53,9 @@ export class Interpreter
     });
   }
 
-  public interpret = ({ statements }: { statements: Stmt[] }) => {
+  public interpret = ({ statments }: { statments: Stmt[] }) => {
     try {
-      for (const statment of statements) {
+      for (const statment of statments) {
         this.execute({ statment });
       }
     } catch (error) {
@@ -313,7 +313,6 @@ export class Interpreter
 
   public visitPrintStmt = ({ stmt }: { stmt: Print }) => {
     const value = this.evalute({ expr: stmt.expression });
-    console.log(this.stringify({ object: value }));
     Shell.output({ value: this.stringify({ object: value }) });
     return null;
   };

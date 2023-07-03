@@ -40,7 +40,7 @@ export class Shell {
       return;
     }
 
-    interpreter.interpret({ statements });
+    interpreter.interpret({ statments: statements });
 
     if (Shell.hadRuntimeError) {
       return;
@@ -68,12 +68,14 @@ export class Shell {
   };
 
   public static runtimeError = ({ error }: { error: RuntimeError }) => {
-    Shell.output({ value: `${error.message} \n[line ${error.token.line}]` });
+    Shell.output({
+      value: `${error.message} \n[line ${error.token.line}]`,
+    });
     Shell.hadRuntimeError = true;
   };
 
   private static report = (props: Error & { where: string }) => {
-    Shell.ouput({
+    Shell.output({
       value: `[line ${props.line}] Error ${props.where}: ${props.message}`,
     });
     this.hadError = true;
