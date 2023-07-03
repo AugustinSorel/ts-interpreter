@@ -1,7 +1,7 @@
 "use client";
 
 import { Editor, Monaco } from "@monaco-editor/react";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { editor } from "monaco-editor";
 import { KEYWORDS } from "@/interpreter/Scanner";
 import { Shell } from "@/interpreter/Shell";
@@ -15,6 +15,7 @@ hello("world");`;
 const Page = () => {
   const [output, setOutput] = useState<string[]>([]);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const clearOutput = () => {
     setOutput([]);
@@ -112,8 +113,12 @@ const Page = () => {
       return;
     }
 
-    const shell = new Shell({ output: insertToList });
-    shell.run({ source });
+    clearOutput();
+
+    startTransition(() => {
+      const shell = new Shell({ output: insertToList });
+      shell.run({ source });
+    });
   };
 
   return (
@@ -123,7 +128,8 @@ const Page = () => {
           <h2 className="mr-auto font-bold capitalize">code</h2>
 
           <button
-            className="flex items-center gap-1 rounded-md bg-green-700 px-3 py-2 transition-colors hover:bg-green-800"
+            disabled={isPending}
+            className="flex items-center gap-1 rounded-md bg-green-700 px-3 py-2 transition-colors hover:bg-green-800 disabled:opacity-50"
             onClick={runCode}
           >
             <span className="text-sm font-bold uppercase">run</span>
