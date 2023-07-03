@@ -44,7 +44,11 @@ export const Header = () => {
           </Link>
         </div>
 
-        <button className="lg:hidden" onClick={openMobileNav}>
+        <button
+          className="lg:hidden"
+          onClick={openMobileNav}
+          aria-label="open-menu"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -73,7 +77,7 @@ const MobileNav = ({ closeHandler }: { closeHandler: () => void }) => {
 
   return createPortal(
     <nav className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-10 bg-black/20 text-3xl capitalize backdrop-blur-md">
-      <button onClick={closeHandler} aria-label="open-menu">
+      <button onClick={closeHandler} aria-label="close-menu">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
