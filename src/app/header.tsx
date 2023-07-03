@@ -23,14 +23,14 @@ export const Header = () => {
         <div className=" hidden flex-wrap items-center gap-5 lg:flex">
           <Link
             href="/playground"
-            className="inline-block text-zinc-400 transition-colors hover:text-zinc-200 hover:underline aria-[current=true]:text-zinc-200 aria-[current=true]:underline "
+            className="inline-block text-neutral-400 transition-colors hover:text-zinc-200 hover:underline aria-[current=true]:text-zinc-200 aria-[current=true]:underline "
             aria-current={path === "/playground"}
           >
             playground
           </Link>
           <Link
             href="/documentation"
-            className="inline-block text-zinc-400 transition-colors hover:text-zinc-200 hover:underline aria-[current=true]:text-zinc-200 aria-[current=true]:underline "
+            className="inline-block text-neutral-400 transition-colors hover:text-zinc-200 hover:underline aria-[current=true]:text-zinc-200 aria-[current=true]:underline "
             aria-current={path === "/documentation"}
           >
             documentation
@@ -38,7 +38,7 @@ export const Header = () => {
           <Link
             href="https://github.com/augustinsorel/ts-interpreter"
             target="_blank"
-            className="inline-block text-zinc-400 transition-colors hover:text-zinc-200 hover:underline"
+            className="inline-block text-neutral-400 transition-colors hover:text-zinc-200 hover:underline"
           >
             github
           </Link>
