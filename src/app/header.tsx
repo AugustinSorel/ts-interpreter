@@ -15,7 +15,7 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-20 flex min-h-[6rem] p-5 backdrop-blur-md">
-      <nav className="m-auto flex w-full max-w-7xl flex-col items-center justify-between gap-5 font-semibold capitalize sm:flex-row">
+      <nav className="m-auto flex w-full max-w-7xl items-center justify-between gap-5 font-semibold capitalize">
         <Link href="/">
           <h1 className=" text-xl">typescript interpreter</h1>
         </Link>
@@ -73,7 +73,7 @@ const MobileNav = ({ closeHandler }: { closeHandler: () => void }) => {
 
   return createPortal(
     <nav className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-10 bg-black/20 text-3xl capitalize backdrop-blur-md">
-      <button onClick={closeHandler}>
+      <button onClick={closeHandler} aria-label="open-menu">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"

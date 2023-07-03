@@ -175,7 +175,7 @@ const Page = () => {
           <h2 className="font-bold capitalize">output</h2>
           <button
             onClick={clearOutput}
-            className="text-neutral-500 transition-colors hover:text-current"
+            className="text-neutral-400 transition-colors hover:text-current"
           >
             clear
           </button>
@@ -183,7 +183,7 @@ const Page = () => {
         <ol className="max-h-full flex-1 overflow-auto bg-zinc-900 p-5">
           {output.map((value, index) => (
             <li key={index}>
-              <span className="text-neutral-500">ts-interpreter{">"} </span>
+              <span className="text-neutral-400">ts-interpreter{">"} </span>
               <span>{value}</span>
             </li>
           ))}

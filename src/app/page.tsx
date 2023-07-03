@@ -270,7 +270,7 @@ const Heading = (props: HTMLProps<HTMLHeadingElement>) => {
 };
 
 const Paragraph = (props: HTMLProps<HTMLParagraphElement>) => {
-  return <p {...props} className="text-xl text-neutral-500" />;
+  return <p {...props} className="text-xl text-neutral-400" />;
 };
 
 const Card = (props: HTMLProps<HTMLLIElement>) => {
@@ -307,7 +307,7 @@ const CodeBlock = (props: HTMLProps<HTMLElement> & { title: string }) => {
   return (
     <div className="rounded-md border border-white/5 bg-white/5 backdrop-blur-md">
       <div className="border-b border-white/10 p-2">
-        <span className="font-bold capitalize text-neutral-500">{title}</span>
+        <span className="font-bold capitalize text-neutral-400">{title}</span>
       </div>
       <code {...codeProps} className="block p-5" />
     </div>
