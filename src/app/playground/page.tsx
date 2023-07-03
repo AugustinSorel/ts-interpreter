@@ -1,7 +1,7 @@
 "use client";
 
 import { Editor, Monaco } from "@monaco-editor/react";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import { editor } from "monaco-editor";
 import { KEYWORDS } from "@/interpreter/Scanner";
 import { Shell } from "@/interpreter/Shell";
@@ -10,7 +10,7 @@ const defaultCode = `fun hello(name) {
   print "Hello " + name;
 }
 
-hello("you");`;
+hello("world");`;
 
 const Page = () => {
   const [output, setOutput] = useState<string[]>([]);

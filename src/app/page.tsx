@@ -23,7 +23,7 @@ export default function Home() {
           <CallToAction href="/playground">playground</CallToAction>
         </div>
 
-        <CodeBlock>
+        <CodeBlock title="fibonacci">
           <span className="text-blue-500">fun </span>
           <span className="text-yellow-200">fib</span>
           <span className="text-yellow-500">(</span>
@@ -108,7 +108,7 @@ export default function Home() {
           <CallToAction href="/documentation">view docs</CallToAction>
         </div>
 
-        <CodeBlock>
+        <CodeBlock title="inheritance">
           <span className="text-blue-500">class </span>
           <span className="text-yellow-200">Doughnut </span>
           <span className="text-yellow-500">{`{`}</span>
@@ -160,7 +160,7 @@ export default function Home() {
           <CallToAction href="/documentation">view docs</CallToAction>
         </div>
 
-        <CodeBlock>
+        <CodeBlock title="closures">
           <span className="text-blue-500">fun </span>
           <span className="text-yellow-200">makeFunction</span>
           <span className="text-yellow-500">{"() {"}</span>
@@ -301,11 +301,15 @@ const CardsGrid = (props: HTMLProps<HTMLUListElement>) => {
   );
 };
 
-const CodeBlock = (props: HTMLProps<HTMLElement>) => {
+const CodeBlock = (props: HTMLProps<HTMLElement> & { title: string }) => {
+  const { title, ...codeProps } = props;
+
   return (
-    <code
-      {...props}
-      className="whitespace-pre-line rounded-md border border-white/5 bg-white/5 p-5 backdrop-blur-md"
-    />
+    <div className="rounded-md border border-white/5 bg-white/5 backdrop-blur-md">
+      <div className="border-b border-white/10 p-2">
+        <span className="font-bold capitalize text-neutral-500">{title}</span>
+      </div>
+      <code {...codeProps} className="block p-5" />
+    </div>
   );
 };
