@@ -5,7 +5,7 @@ This is a fully programming language made from from scratch with TypeScript. It 
 ## Demo
 
 - live website: https://ts-interpreter.vercel.app/
-- youtube viedo: https://youtu.be/aQSlwkD4e4o
+- youtube viedo: https://youtu.be/fpjl1JY2ilk
 
 ## Images
 
