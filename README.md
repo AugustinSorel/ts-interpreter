@@ -1,4 +1,119 @@
-# ts-interpreter
+# TypeScript Interpreter
+
+This is a fully programming language made from from scratch with TypeScript. It supports OOP, classes, inheritance, user define functions, built in functions, variable assignments and loops.
+
+## Demo
+
+- live website: https://instagram-imitation.vercel.app
+- youtube viedo: https://youtu.be/aQSlwkD4e4o
+
+## Images
+
+### Home Page
+
+### Playground
+
+### Documentation
+
+## Features
+
+### OOP
+
+```js
+class Doughnut {
+  cook() {
+    print "Fry until golden brown.";
+  }
+}
+
+class BostonCream < Doughnut{}
+
+BostonCream().cook();
+```
+
+### Functions
+
+```js
+fun fib(n) {
+  if (n <= 1) {
+    return n;
+  }
+  return fib(n - 2) + fib(n - 1);
+}
+
+for (var i = 0; i < 20; i = i + 1) {
+  print fib(i);
+}
+```
+
+### Loops
+
+```js
+for(var i = 0; i < 20; i = i +1){
+  print i;
+}
+
+var i = 0;
+while(i < 20){
+  print i;
+  i = i + 1;
+}
+```
+
+### Boolean
+
+```js
+var x = 12 > 10+1 ? true : false;
+print x;
+
+if(true and false){
+  print "true and false is true";
+}else{
+  print "true and false is false";
+}
+```
+
+### Math
+
+```js
+var x = 12;
+var y = 13;
+var z = 14;
+
+print (x + y) * z;
+print x + y * z;
+print (x - 10) ** (y - 11 ) - z;
+print x + y ** -1;
+print x / y / z;
+print y + 0.0;
+print x % 20 + x % 10;
+```
+
+### String
+
+```js
+var x = "hello";
+var y = "world";
+
+print x + " " + y;
+print x + 3;
+```
+
+### Built In Functions
+
+```js
+print "Hello";
+print clock();
+```
+
+### Comment
+
+```js
+/*
+the clock method is a built in function
+*/
+print clock(); // this will print the time
+```
 
 ## Grammar
 

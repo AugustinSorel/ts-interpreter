@@ -313,7 +313,7 @@ export class Interpreter
 
   public visitPrintStmt = ({ stmt }: { stmt: Print }) => {
     const value = this.evalute({ expr: stmt.expression });
-    console.log(this.stringify({ object: value }));
+    Shell.output({ value: this.stringify({ object: value }) });
     return null;
   };
 
