@@ -4,14 +4,16 @@ This is a fully programming language made from from scratch with TypeScript. It 
 
 ## Demo
 
-- live website: https://instagram-imitation.vercel.app
+- live website: https://ts-interpreter.vercel.app/
 - youtube viedo: https://youtu.be/aQSlwkD4e4o
 
 ## Images
 
 ### Home Page
+![ts-interpreter vercel app_ (1)](https://github.com/AugustinSorel/ts-interpreter/assets/48162609/d40cb581-d6b4-4c44-bcb4-bf50aac79a36)
 
 ### Playground
+![ts-interpreter vercel app_playground (1)](https://github.com/AugustinSorel/ts-interpreter/assets/48162609/e89fdebe-db6a-455b-9489-677150dbab63)
 
 ### Documentation
 
