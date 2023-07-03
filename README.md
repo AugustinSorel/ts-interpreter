@@ -10,13 +10,13 @@ This is a fully programming language made from from scratch with TypeScript. It 
 ## Images
 
 ### Home Page
-![ts-interpreter vercel app_ (1)](https://github.com/AugustinSorel/ts-interpreter/assets/48162609/d40cb581-d6b4-4c44-bcb4-bf50aac79a36)
+![ts-interpreter vercel app_ (1)](https://github.com/AugustinSorel/ts-interpreter/assets/48162609/44894a57-3780-4b0c-a694-9c3c315cb541)
 
-### Playground
-![ts-interpreter vercel app_playground (1)](https://github.com/AugustinSorel/ts-interpreter/assets/48162609/e89fdebe-db6a-455b-9489-677150dbab63)
+### Play Ground
+![ts-interpreter vercel app_playground](https://github.com/AugustinSorel/ts-interpreter/assets/48162609/5ac92e54-84d9-457b-802d-283aa8389b5e)
 
 ### Documentation
-![localhost_3000_documentation](https://github.com/AugustinSorel/ts-interpreter/assets/48162609/62c4ac4c-e142-468c-b1dd-9df870a5c709)
+![localhost_3000_documentation](https://github.com/AugustinSorel/ts-interpreter/assets/48162609/9f36166a-f831-443a-bd67-41ad4ac28268)
 
 ## Features
 
